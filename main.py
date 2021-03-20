@@ -62,7 +62,7 @@ def getAllTasks():
         db.execute("SELECT * FROM tasks")
         rows = db.fetchall()
         if len(rows) == 0:
-            print('No tasks')
+            print('No tasks! Enjoy your free time :)')
         for row in rows:
             print(row)
     except sqlite3.Error as error:

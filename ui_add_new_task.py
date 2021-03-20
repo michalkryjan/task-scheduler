@@ -1,12 +1,39 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMenu, QMenuBar, QAction
 from main import Task, startDb, getAllTasks
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-
         self.initUI(MainWindow)
+
+
+    def _createMenuBar(self, MainWindow):
+        menuBar = QMenuBar(MainWindow)
+        menuBar.addAction(self.newTaskAction)
+        checkTasksMenu = menuBar.addMenu("& Check your tasks")
+        menuBar.addMenu(checkTasksMenu)
+        checkTasksMenu.addAction(self.allTasksAction)
+        checkTasksMenu.addSeparator()
+        checkTasksMenu.addAction(self.forTodayAction)
+        checkTasksMenu.addSeparator()
+        checkTasksMenu.addAction(self.forTomorrowAction)
+        checkTasksMenu.addSeparator()
+        checkTasksMenu.addAction(self.urgentAction)
+        checkTasksMenu.addSeparator()
+        checkTasksMenu.addAction(self.notUrgentAction)
+        menuBar.adjustSize()
+
+
+    def _createActions(self):
+        self.newTaskAction = QAction('& New task', self)
+        self.allTasksAction = QAction('& All', self)
+        self.forTodayAction = QAction('& For today', self)
+        self.forTomorrowAction = QAction('& For tomorrow', self)
+        self.urgentAction = QAction('& Urgent', self)
+        self.notUrgentAction = QAction('& Not urgent', self)
+
 
     def initUI(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -74,20 +101,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.newtask_close.setFont(font)
         self.newtask_close.setObjectName("newtask_close")
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 792, 21))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-
+        self._createActions()
+        self._createMenuBar(MainWindow)
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "New task"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Task scheduler"))
         self.window_label.setText(_translate("MainWindow", "Add a new task"))
         self.window_label.adjustSize()
         self.newtask_title_label.setText(_translate("MainWindow", "Title:"))
@@ -104,13 +125,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.newtask_isurgent.setItemText(1, _translate("MainWindow", "No"))
         self.newtask_save.setText(_translate("MainWindow", "Save"))
         self.newtask_close.setText(_translate("MainWindow", "Close"))
-        self.newtask_close.clicked.connect(self.exit)
-        self.newtask_save.clicked.connect(self.save_task)
+        self.newtask_close.clicked.connect(QtWidgets.qApp.quit)
+        self.newtask_save.clicked.connect(self.saveTask)
 
-    def exit(self):
-        sys.exit(app.exec_())
-
-    def save_task(self):
+    def saveTask(self):
         name = self.newtask_title.text()
         description = self.newtask_description.toPlainText()
         deadline = self.newtask_deadline.text()
