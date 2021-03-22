@@ -1,8 +1,10 @@
 from PyQt5.QtWidgets import qApp, QMainWindow, QApplication, QWidget, QFormLayout, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QTextEdit, QDateEdit, QComboBox, QPushButton, QTabWidget
 from PyQt5.QtCore import Qt, QDate, QDateTime
 from PyQt5.QtGui import QFont
-from main import Task, startDb, getAllTasks
 import sys
+from task import Task
+from db_actions import GetTasks
+
 
 
 class App(QMainWindow):
@@ -23,6 +25,7 @@ class TabWidget(QWidget):
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)   
         self.layout = QVBoxLayout(self)
+        self.getTasks = GetTasks()
 
         # font for tabs
         font = QFont()
@@ -51,7 +54,12 @@ class TabWidget(QWidget):
 
         # creating views for tabs
         self.newTaskView()
-
+        self.allTasksView()
+        self.forTodayTasksView()
+        self.forTomorrowTasksView()
+        self.urgentTasksView()
+        self.notUrgentTasksView()
+        
         # Add tabs to layout 
         self.layout.addWidget(self.tabs) 
         self.setLayout(self.layout) 
@@ -136,7 +144,7 @@ class TabWidget(QWidget):
         self.newTask.outerLayout.addLayout(self.newTask.middleFormLayout)
         self.newTask.outerLayout.addLayout(self.newTask.bottomLayout)
         self.newTask.setLayout(self.newTask.outerLayout)
-    
+
 
     def allTasksView(self):
         pass
@@ -160,11 +168,9 @@ class TabWidget(QWidget):
         is_urgent = self.isurgent.currentText()
         completed_task = Task(name, description, deadline, is_urgent)
         completed_task.addTaskToDb()
-        getAllTasks()
 
 
 if __name__ == "__main__":
-    startDb()
     app = QApplication(sys.argv)
     ex = App()
     sys.exit(app.exec_())
