@@ -2,6 +2,7 @@ import sqlite3
 import os.path
 from datetime import date, datetime
 
+
 def createConnection():
     conn = None
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -31,74 +32,17 @@ def startDb():
         if sqliteConnection:
             sqliteConnection.close()
 
-
-class GetTasks:
-    def __init__(self):
-        startDb()
-        
-    def all(self):
-        try:
-            sqliteConnection = createConnection()
-            db = sqliteConnection.cursor()
-            db.execute('SELECT * FROM tasks WHERE status="new" ORDER BY deadline ASC, name')
-            rows = db.fetchall()
-        except sqlite3.Error as error:
-            print('Error while selecting all tasks', error)
-        finally:
-            if sqliteConnection:
-                sqliteConnection.close()
-            return rows
-    
-    def forToday(self):
-        try:
-            sqliteConnection = createConnection()
-            db = sqliteConnection.cursor()
-            today = date.today()
-            db.execute('SELECT * FROM tasks WHERE deadline=? ORDER BY name', (str(today)))
-            rows = db.fetchall()
-        except sqlite3.Error as error:
-            print('Error while selecting tasks for today', error)
-        finally:
-            if sqliteConnection:
-                sqliteConnection.close()
-            return rows
-    
-    def forTomorrow(self):
-        try:
-            sqliteConnection = createConnection()
-            db = sqliteConnection.cursor()
-            tomorrow = datetime.date.today() + datetime.timedelta(days=1)
-            db.execute('SELECT * FROM tasks WHERE deadline=? ORDER BY name', (str(tomorrow)))
-            rows = db.fetchall()
-        except sqlite3.Error as error:
-            print('Error while selecting tasks for tomorrow', error)
-        finally:
-            if sqliteConnection:
-                sqliteConnection.close()
-            return rows
-    
-    def urgent(self):
-        try:
-            sqliteConnection = createConnection()
-            db = sqliteConnection.cursor()
-            db.execute('SELECT * FROM tasks WHERE is_urgent="yes" ORDER BY deadline ASC, name')
-            rows = db.fetchall()
-        except sqlite3.Error as error:
-            print('Error while selecting urgent tasks', error)
-        finally:
-            if sqliteConnection:
-                sqliteConnection.close()
-            return rows
-
-    def notUrgent(self):
-        try:
-            sqliteConnection = createConnection()
-            db = sqliteConnection.cursor()
-            db.execute('SELECT * FROM tasks WHERE is_urgent="no" ORDER BY deadline ASC, name')
-            rows = db.fetchall()
-        except sqlite3.Error as error:
-            print('Error while selecting not urgent tasks', error)
-        finally:
-            if sqliteConnection:
-                sqliteConnection.close()
-            return rows
+def addTaskToDb(name, description, deadline, is_urgent):
+    try:
+        time_added = datetime.now()
+        status = 'new'
+        sqliteConnection = createConnection()
+        db = sqliteConnection.cursor()
+        db.execute("INSERT INTO tasks(name, description, deadline, is_urgent, time_added, status) VALUES (?, ?, ?, ?, ?, ?)", (str(name), str(description), str(deadline), str(is_urgent), str(time_added), str(status)))
+        sqliteConnection.commit()
+        print('successfully added')
+    except sqlite3.Error as error:
+        print("Error while adding a new task to db", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
