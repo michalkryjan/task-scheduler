@@ -17,9 +17,10 @@ class Task:
             sqliteConnection = createConnection()
             db = sqliteConnection.cursor()
             db.execute('UPDATE tasks SET status="done" WHERE id=?',(str(self.id)))
-            db.commit()
+            sqliteConnection.commit()
         except sqlite3.Error as error:
             print("Error while setting a task as done", error)
         finally:
             if sqliteConnection:
                 sqliteConnection.close()
+
