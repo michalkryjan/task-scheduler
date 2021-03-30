@@ -47,14 +47,3 @@ def addTaskToDb(name, description, deadline, is_urgent):
         if sqliteConnection:
             sqliteConnection.close()
 
-def deleteTask(id):
-    try:
-        sqliteConnection = createConnection()
-        db = sqliteConnection.cursor()
-        db.execute('DELETE FROM tasks WHERE id=?',(str(id),))
-        sqliteConnection.commit()
-    except sqlite3.Error as error:
-        print("Error while deleting a task", error)
-    finally:
-        if sqliteConnection:
-            sqliteConnection.close()
