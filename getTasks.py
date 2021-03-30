@@ -26,7 +26,7 @@ def getForToday():
         sqliteConnection = createConnection()
         db = sqliteConnection.cursor()
         today = date.today().strftime('%d.%m.%Y')
-        db.execute('SELECT * FROM tasks WHERE deadline=? ORDER BY name', (str(today),))
+        db.execute('SELECT * FROM tasks WHERE deadline=? AND status="new" ORDER BY name', (str(today),))
         rows = db.fetchall()
     except sqlite3.Error as error:
         print('Error while selecting tasks for today', error)
@@ -45,7 +45,7 @@ def getForTomorrow():
         db = sqliteConnection.cursor()
         tomorrow = date.today() + timedelta(days=1)
         tomorrow = tomorrow.strftime('%d.%m.%Y')
-        db.execute('SELECT * FROM tasks WHERE deadline=? ORDER BY name', (str(tomorrow),))
+        db.execute('SELECT * FROM tasks WHERE deadline=? AND status="new" ORDER BY name', (str(tomorrow),))
         rows = db.fetchall()
     except sqlite3.Error as error:
         print('Error while selecting tasks for tomorrow', error)
@@ -62,7 +62,7 @@ def getUrgent():
     try:
         sqliteConnection = createConnection()
         db = sqliteConnection.cursor()
-        db.execute('SELECT * FROM tasks WHERE is_urgent="Yes" ORDER BY deadline ASC, name')
+        db.execute('SELECT * FROM tasks WHERE is_urgent="Yes" AND status="new" ORDER BY deadline ASC, name')
         rows = db.fetchall()
     except sqlite3.Error as error:
         print('Error while selecting urgent tasks', error)
@@ -79,7 +79,7 @@ def getNotUrgent():
     try:
         sqliteConnection = createConnection()
         db = sqliteConnection.cursor()
-        db.execute('SELECT * FROM tasks WHERE is_urgent="No" ORDER BY deadline ASC, name')
+        db.execute('SELECT * FROM tasks WHERE is_urgent="No" AND status="new" ORDER BY deadline ASC, name')
         rows = db.fetchall()
     except sqlite3.Error as error:
         print('Error while selecting not urgent tasks', error)
@@ -113,7 +113,7 @@ def getOne(id):
     try:
         sqliteConnection = createConnection()
         db = sqliteConnection.cursor()
-        db.execute('SELECT * FROM tasks WHERE id=?', (str(id)))
+        db.execute('SELECT * FROM tasks WHERE id=?', (id,))
         row = db.fetchone()
     except sqlite3.Error as error:
         print('Error while selecting the specified task', error)
