@@ -13,7 +13,7 @@ class App(QMainWindow):
         super().__init__()
         startDb()
         self.setWindowTitle('Task scheduler')
-        self.setWindowIcon(QIcon('icons/window_icon.png'))
+        self.setWindowIcon(QIcon('icons/tasks_icon.png'))
         self.tab_widget = TabWidget(self)
         self.setCentralWidget(self.tab_widget)
         self.resize(800, 700)
@@ -25,8 +25,8 @@ class App(QMainWindow):
 
 class TabWidget(QWidget):
     def __init__(self, parent):
-        super().__init__(parent)
-        self.layout = QVBoxLayout()   
+        super().__init__(parent) 
+        self.layout = QVBoxLayout()  
         self.createTabs()
 
     def createTabs(self):
@@ -195,10 +195,8 @@ class TabWidget(QWidget):
         tasklist.setLayout(groupboxLayout)
         scroll = QScrollArea()
         scroll.setWidget(tasklist)
-        scroll.setWidgetResizable(True)
+        scroll.setWidgetResizable(False)
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setFixedHeight(600)
-        scroll.setMaximumWidth(800)
         return scroll
 
     # views
@@ -253,6 +251,7 @@ class TabWidget(QWidget):
         selectedTask = getOne(id)
         # open new window for editing task here
         self.details = QDialog()
+        self.details.setWindowIcon(QIcon('icons/calendar_icon.png'))
         self.details.resize(800,700)
         self.details.setWindowTitle('Details')
         self.details.setWindowModality(Qt.ApplicationModal)

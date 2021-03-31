@@ -62,7 +62,7 @@ def getUrgent():
     try:
         sqliteConnection = createConnection()
         db = sqliteConnection.cursor()
-        db.execute('SELECT * FROM tasks WHERE is_urgent="Yes" AND status="new" ORDER BY deadline ASC, name')
+        db.execute('SELECT * FROM tasks WHERE is_urgent="Yes" AND status="new" ORDER BY deadline, name')
         rows = db.fetchall()
     except sqlite3.Error as error:
         print('Error while selecting urgent tasks', error)
