@@ -27,46 +27,50 @@ class TabWidget(QWidget):
     def __init__(self, parent):
         super().__init__(parent) 
         self.layout = QVBoxLayout()  
-        self.createTabs()
+        self.tabs = self.createTabs()
+        self.setLayout(self.layout)
 
     def createTabs(self):
-        # font for tabs
+        tabs = QTabWidget()
+        self.SetFontForWidget(tabs)
+
+        self.checkYourTasks = self.InitTabScreen(tabs)
+        self.layout.addWidget(tabs) 
+
+        return tabs
+
+    def SetFontForWidget(self, tabs):
         font = QFont()
         font.setFamily('Century Gothic')
         font.setPointSize(9)
-        # tab screen
-        self.tabs = QTabWidget()
-        self.tabs.setFont(font)
-        self.newTask = QWidget()
-        self.checkYourTasks = QTabWidget()
-        self.allTasks = QWidget()
-        self.forTodayTasks = QWidget()
-        self.forTomorrowTasks = QWidget()
-        self.urgentTasks = QWidget()
-        self.notUrgentTasks = QWidget()
-        self.doneTasks = QWidget()
-        # add tabs
-        self.tabs.addTab(self.newTask, 'New Task')
-        self.tabs.addTab(self.checkYourTasks, 'Check your tasks')
-        self.checkYourTasks.addTab(self.forTodayTasks, 'For today')
-        self.checkYourTasks.addTab(self.forTomorrowTasks, 'For tomorrow')
-        self.checkYourTasks.addTab(self.urgentTasks, 'Urgent')
-        self.checkYourTasks.addTab(self.notUrgentTasks, 'Not urgent')
-        self.checkYourTasks.addTab(self.allTasks, 'All to do')
-        self.checkYourTasks.addTab(self.doneTasks, 'Done')
-        # creating views for tabs
-        self.newTaskView()
-        self.allTasksView()
-        self.forTodayTasksView()
-        self.forTomorrowTasksView()
-        self.urgentTasksView()
-        self.notUrgentTasksView()
-        self.doneTasksView()
-        # add tabs to layout 
-        self.layout.addWidget(self.tabs) 
-        self.setLayout(self.layout)
+        tabs.setFont(font)
 
-    def newTaskView(self):
+    def InitTabScreen(self, tabs):
+        checkYourTasks = QTabWidget()
+        newTask = self.createWidgetUnder(tabs, 'New Task')
+        self.newTaskView(newTask)
+        tabs.addTab(checkYourTasks, 'Check your tasks')
+        allTasks = self.createWidgetWithViewUnder(checkYourTasks, 'All to do', getAll)
+        forTodayTasks = self.createWidgetWithViewUnder(checkYourTasks, 'For today', getForToday)
+        forTomorrowTasks = self.createWidgetWithViewUnder(checkYourTasks, 'For tomorrow', getForTomorrow)
+        urgentTasks = self.createWidgetWithViewUnder(checkYourTasks, 'Urgent', getUrgent)
+        notUrgentTasks = self.createWidgetWithViewUnder(checkYourTasks, 'Not urgent', getNotUrgent)
+        doneTasks = self.createWidgetWithViewUnder(checkYourTasks, 'Done', getDone)
+
+        return checkYourTasks
+
+    def createWidgetUnder(self, parentTab, name):
+        widget = QWidget()
+        parentTab.addTab(widget, name)
+        return widget
+
+    def createWidgetWithViewUnder(self, parentTab, name, getTasksMethod):
+        widget = QWidget()
+        parentTab.addTab(widget, name)
+        self.createTabView(widget, getTasksMethod)
+        return widget
+
+    def newTaskView(self, newTask):
         # customized fonts
         font1 = QFont()
         font1.setFamily('Sitka Small')
@@ -75,13 +79,13 @@ class TabWidget(QWidget):
         font2.setFamily('Sitka Small')
         font2.setPointSize(11)
         # main layouts
-        self.newTask.outerLayout = QVBoxLayout(self)
-        self.newTask.middleFormLayout = QFormLayout()
-        self.newTask.bottomLayout = QHBoxLayout()
+        newTask.outerLayout = QVBoxLayout(self)
+        newTask.middleFormLayout = QFormLayout()
+        newTask.bottomLayout = QHBoxLayout()
         # main title of tab
-        self.newtask_label = QLabel('Add a new task')
-        self.newtask_label.setFont(font1)
-        self.newTask.outerLayout.addWidget(self.newtask_label, alignment=Qt.AlignCenter)
+        newtask_label = QLabel('Add a new task')
+        newtask_label.setFont(font1)
+        newTask.outerLayout.addWidget(newtask_label, alignment=Qt.AlignCenter)
         # title
         self.title = QLineEdit()
         self.title.setObjectName('title')
@@ -90,7 +94,7 @@ class TabWidget(QWidget):
         self.title_label.setFont(font2)
         self.title.setMaxLength(100)
         self.title.setMaximumWidth(640)
-        self.newTask.middleFormLayout.addRow(self.title_label, self.title)
+        newTask.middleFormLayout.addRow(self.title_label, self.title)
         # description
         self.description = QTextEdit()
         self.description_label = QLabel('Description:')
@@ -99,7 +103,7 @@ class TabWidget(QWidget):
         self.description_label.setFont(font2)
         self.description.setMaximumHeight(200)
         self.description.setMaximumWidth(640)
-        self.newTask.middleFormLayout.addRow(self.description_label, self.description)
+        newTask.middleFormLayout.addRow(self.description_label, self.description)
         # deadline
         self.deadline = QDateEdit()
         self.deadline.setObjectName('deadline')
@@ -112,7 +116,7 @@ class TabWidget(QWidget):
         self.deadline.setMaximumDate(QDate(2100, 12, 28))
         self.deadline.setCalendarPopup(True)
         self.deadline.setFocusPolicy(Qt.ClickFocus)
-        self.newTask.middleFormLayout.addRow(self.deadline_label, self.deadline)
+        newTask.middleFormLayout.addRow(self.deadline_label, self.deadline)
         # is urgent
         self.isurgent = QComboBox()
         self.isurgent.setObjectName('isurgent')
@@ -123,7 +127,7 @@ class TabWidget(QWidget):
         self.isurgent.setMaximumWidth(130)
         self.isurgent.addItem('Yes')
         self.isurgent.addItem('No')
-        self.newTask.middleFormLayout.addRow(self.isurgent_label, self.isurgent)
+        newTask.middleFormLayout.addRow(self.isurgent_label, self.isurgent)
         # save
         self.save = QPushButton('Save')
         self.save.setObjectName('save')
@@ -131,7 +135,7 @@ class TabWidget(QWidget):
         self.save.setMaximumHeight(100)
         self.save.setMaximumWidth(150)
         self.save.clicked.connect(self.saveNewTask)
-        self.newTask.bottomLayout.addWidget(self.save)
+        newTask.bottomLayout.addWidget(self.save)
         # close
         self.close = QPushButton('Close')
         self.close.setObjectName('close')
@@ -139,11 +143,11 @@ class TabWidget(QWidget):
         self.close.setMaximumHeight(100)
         self.close.setMaximumWidth(150)
         self.close.clicked.connect(qApp.quit)
-        self.newTask.bottomLayout.addWidget(self.close)
+        newTask.bottomLayout.addWidget(self.close)
         # connecting layouts
-        self.newTask.outerLayout.addLayout(self.newTask.middleFormLayout)
-        self.newTask.outerLayout.addLayout(self.newTask.bottomLayout)
-        self.newTask.setLayout(self.newTask.outerLayout)
+        newTask.outerLayout.addLayout(newTask.middleFormLayout)
+        newTask.outerLayout.addLayout(newTask.bottomLayout)
+        newTask.setLayout(newTask.outerLayout)
 
     def createTaskList(self, tasks):
         groupboxLayout = QVBoxLayout()
@@ -162,6 +166,7 @@ class TabWidget(QWidget):
                     squareIcon.setPixmap(QPixmap('icons/yellow_square.png'))
             row.addWidget(squareIcon)
             # task name
+            
             name = QLabel(task.name)
             name.setMaximumHeight(50)
             name.setMinimumHeight(50)
@@ -201,47 +206,12 @@ class TabWidget(QWidget):
 
     # views
 
-    def allTasksView(self):
-        tasks = getAll()
+    def createTabView(self, widget, getTasksMethod):
+        tasks = getTasksMethod()
         taskList = self.createTaskList(tasks)
-        self.allTasks.layout = QVBoxLayout()
-        self.allTasks.layout.addWidget(taskList)
-        self.allTasks.setLayout(self.allTasks.layout)
-    
-    def forTodayTasksView(self):
-        tasks = getForToday()
-        taskList = self.createTaskList(tasks)
-        self.forTodayTasks.layout = QVBoxLayout()
-        self.forTodayTasks.layout.addWidget(taskList)
-        self.forTodayTasks.setLayout(self.forTodayTasks.layout)
-    
-    def forTomorrowTasksView(self):
-        tasks = getForTomorrow()
-        taskList = self.createTaskList(tasks)
-        self.forTomorrowTasks.layout = QVBoxLayout()
-        self.forTomorrowTasks.layout.addWidget(taskList)
-        self.forTomorrowTasks.setLayout(self.forTomorrowTasks.layout)
-    
-    def urgentTasksView(self):
-        tasks = getUrgent()
-        taskList = self.createTaskList(tasks)
-        self.urgentTasks.layout = QVBoxLayout()
-        self.urgentTasks.layout.addWidget(taskList)
-        self.urgentTasks.setLayout(self.urgentTasks.layout)
-
-    def notUrgentTasksView(self):
-        tasks = getNotUrgent()
-        taskList = self.createTaskList(tasks)
-        self.notUrgentTasks.layout = QVBoxLayout()
-        self.notUrgentTasks.layout.addWidget(taskList)
-        self.notUrgentTasks.setLayout(self.notUrgentTasks.layout)
-
-    def doneTasksView(self):
-        tasks = getDone()
-        taskList = self.createTaskList(tasks)
-        self.doneTasks.layout = QVBoxLayout()
-        self.doneTasks.layout.addWidget(taskList)
-        self.doneTasks.setLayout(self.doneTasks.layout)
+        widget.layout = QVBoxLayout()
+        widget.layout.addWidget(taskList)
+        widget.setLayout(widget.layout)
 
     # events for buttons
 
@@ -381,7 +351,7 @@ class TabWidget(QWidget):
             secondIndex = self.checkYourTasks.currentIndex()
         for i in reversed(range(self.layout.count())): 
             self.layout.itemAt(i).widget().setParent(None)
-        self.createTabs()
+        self.tabs = self.createTabs()
         if firstIndex == 1:
             self.tabs.setCurrentIndex(1)
             self.checkYourTasks.setCurrentIndex(secondIndex)
