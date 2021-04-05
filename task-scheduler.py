@@ -14,14 +14,16 @@ class App(QMainWindow):
         startDb()
         self.setWindowTitle('Task scheduler')
         self.setWindowIcon(QIcon('icons/tasks_icon.png'))
-        self.tab_widget = TabWidget(self)
-        self.setCentralWidget(self.tab_widget)
+        self.tabWidget = TabWidget(self)
+        self.setCentralWidget(self.tabWidget)
+        self.setWindowSize()
+        self.show()
+
+    def setWindowSize(self):
         self.resize(800, 700)
         self.setMaximumHeight(700)
         self.setMaximumWidth(800)
         self.setMinimumWidth(800)
-        self.show()
-
 
 class TabWidget(QWidget):
     def __init__(self, parent):
@@ -32,32 +34,29 @@ class TabWidget(QWidget):
 
     def createTabs(self):
         tabs = QTabWidget()
-        self.SetFontForWidget(tabs)
-
+        self.setFontForTabs(tabs)
         self.checkYourTasks = self.InitTabScreen(tabs)
         self.layout.addWidget(tabs) 
-
         return tabs
 
-    def SetFontForWidget(self, tabs):
+    def setFontForTabs(self, tabs):
         font = QFont()
         font.setFamily('Century Gothic')
         font.setPointSize(9)
         tabs.setFont(font)
 
     def InitTabScreen(self, tabs):
-        checkYourTasks = QTabWidget()
+        TabScreen = QTabWidget()
         newTask = self.createWidgetUnder(tabs, 'New Task')
-        self.newTaskView(newTask)
-        tabs.addTab(checkYourTasks, 'Check your tasks')
-        allTasks = self.createWidgetWithViewUnder(checkYourTasks, 'All to do', getAll)
-        forTodayTasks = self.createWidgetWithViewUnder(checkYourTasks, 'For today', getForToday)
-        forTomorrowTasks = self.createWidgetWithViewUnder(checkYourTasks, 'For tomorrow', getForTomorrow)
-        urgentTasks = self.createWidgetWithViewUnder(checkYourTasks, 'Urgent', getUrgent)
-        notUrgentTasks = self.createWidgetWithViewUnder(checkYourTasks, 'Not urgent', getNotUrgent)
-        doneTasks = self.createWidgetWithViewUnder(checkYourTasks, 'Done', getDone)
-
-        return checkYourTasks
+        self.InitNewTaskView(newTask)
+        tabs.addTab(TabScreen, 'Check your tasks')
+        allTasks = self.createWidgetWithViewUnder(TabScreen, 'All to do', getAll)
+        forTodayTasks = self.createWidgetWithViewUnder(TabScreen, 'For today', getForToday)
+        forTomorrowTasks = self.createWidgetWithViewUnder(TabScreen, 'For tomorrow', getForTomorrow)
+        urgentTasks = self.createWidgetWithViewUnder(TabScreen, 'Urgent', getUrgent)
+        notUrgentTasks = self.createWidgetWithViewUnder(TabScreen, 'Not urgent', getNotUrgent)
+        doneTasks = self.createWidgetWithViewUnder(TabScreen, 'Done', getDone)
+        return TabScreen
 
     def createWidgetUnder(self, parentTab, name):
         widget = QWidget()
@@ -70,84 +69,135 @@ class TabWidget(QWidget):
         self.createTabView(widget, getTasksMethod)
         return widget
 
-    def newTaskView(self, newTask):
-        # customized fonts
-        font1 = QFont()
-        font1.setFamily('Sitka Small')
-        font1.setPointSize(20)
-        font2 = QFont()
-        font2.setFamily('Sitka Small')
-        font2.setPointSize(11)
-        # main layouts
-        newTask.outerLayout = QVBoxLayout(self)
-        newTask.middleFormLayout = QFormLayout()
-        newTask.bottomLayout = QHBoxLayout()
-        # main title of tab
-        newtask_label = QLabel('Add a new task')
-        newtask_label.setFont(font1)
-        newTask.outerLayout.addWidget(newtask_label, alignment=Qt.AlignCenter)
-        # title
-        self.title = QLineEdit()
-        self.title.setObjectName('title')
-        self.title_label = QLabel('Title:')
-        self.title.setFont(font2)
-        self.title_label.setFont(font2)
-        self.title.setMaxLength(100)
-        self.title.setMaximumWidth(640)
-        newTask.middleFormLayout.addRow(self.title_label, self.title)
-        # description
-        self.description = QTextEdit()
-        self.description_label = QLabel('Description:')
-        self.description.setObjectName('description')
-        self.description.setFont(font2)
-        self.description_label.setFont(font2)
-        self.description.setMaximumHeight(200)
-        self.description.setMaximumWidth(640)
-        newTask.middleFormLayout.addRow(self.description_label, self.description)
-        # deadline
-        self.deadline = QDateEdit()
-        self.deadline.setObjectName('deadline')
-        self.deadline_label = QLabel('Deadline:')
-        self.deadline_label.setFont(font2)
-        self.deadline.setFont(font2)
-        self.deadline.setMaximumHeight(40)
-        self.deadline.setMaximumWidth(130)
-        self.deadline.setDateTime(QDateTime.currentDateTime())
-        self.deadline.setMaximumDate(QDate(2100, 12, 28))
-        self.deadline.setCalendarPopup(True)
-        self.deadline.setFocusPolicy(Qt.ClickFocus)
-        newTask.middleFormLayout.addRow(self.deadline_label, self.deadline)
-        # is urgent
-        self.isurgent = QComboBox()
-        self.isurgent.setObjectName('isurgent')
-        self.isurgent_label = QLabel('Is urgent?')
-        self.isurgent_label.setFont(font2)
-        self.isurgent.setFont(font2)
-        self.isurgent.setMaximumHeight(40)
-        self.isurgent.setMaximumWidth(130)
-        self.isurgent.addItem('Yes')
-        self.isurgent.addItem('No')
-        newTask.middleFormLayout.addRow(self.isurgent_label, self.isurgent)
-        # save
-        self.save = QPushButton('Save')
-        self.save.setObjectName('save')
-        self.save.setFont(font2)
-        self.save.setMaximumHeight(100)
-        self.save.setMaximumWidth(150)
-        self.save.clicked.connect(self.saveNewTask)
-        newTask.bottomLayout.addWidget(self.save)
-        # close
-        self.close = QPushButton('Close')
-        self.close.setObjectName('close')
-        self.close.setFont(font2)
-        self.close.setMaximumHeight(100)
-        self.close.setMaximumWidth(150)
-        self.close.clicked.connect(qApp.quit)
-        newTask.bottomLayout.addWidget(self.close)
-        # connecting layouts
-        newTask.outerLayout.addLayout(newTask.middleFormLayout)
-        newTask.outerLayout.addLayout(newTask.bottomLayout)
-        newTask.setLayout(newTask.outerLayout)
+    def createTabView(self, widget, getTasksMethod):
+        tasks = getTasksMethod()
+        taskList = self.createTaskList(tasks)
+        layout = QVBoxLayout()
+        layout.addWidget(taskList)
+        widget.setLayout(layout)
+
+    def InitNewTaskView(self, newTask):
+        mainLayout = QVBoxLayout(self)
+        mainLayout.addWidget(self.createNewTaskMainLabel(), alignment=Qt.AlignCenter)
+        mainLayout.addLayout(self.createTaskBodyLayout())
+        mainLayout.addLayout(self.createTaskFooterLayout())
+        newTask.setLayout(mainLayout)
+
+    def createTaskBodyLayout(self):
+        self.title = self.createTitleField()
+        self.description = self.createDescriptionField()
+        self.deadline = self.createDeadlineField()
+        self.isurgent = self.createIsUrgentField()
+        bodyLayout = QFormLayout()
+        bodyLayout.addRow(self.createTitleLabel(), self.title)
+        bodyLayout.addRow(self.createDescriptionLabel(), self.description)
+        bodyLayout.addRow(self.createDeadlineLabel(), self.deadline)
+        bodyLayout.addRow(self.createIsUrgentLabel(), self.isurgent)
+        return bodyLayout
+
+    def createTaskFooterLayout(self):
+        self.save = self.createSaveButton()
+        self.close = self.createCloseButton()
+        footerLayout = QHBoxLayout()
+        footerLayout.addWidget(self.save)
+        footerLayout.addWidget(self.close)
+        return footerLayout
+
+    def setDefaultFontForWidget(self, widget):
+        font = QFont()
+        font.setFamily('Sitka Small')
+        font.setPointSize(11)
+        widget.setFont(font)
+
+    def setBiggerFontForWidget(self, widget):
+        font = QFont()
+        font.setFamily('Sitka Small')
+        font.setPointSize(20)
+        widget.setFont(font)
+
+    def createNewTaskMainLabel(self):
+        label = QLabel('Add a new task')
+        self.setBiggerFontForWidget(label)
+        return label
+
+    def createTitleLabel(self):
+        label = QLabel('Title:')
+        self.setDefaultFontForWidget(label)
+        return label
+
+    def createTitleField(self):
+        title = QLineEdit()
+        title.setMaxLength(100)
+        title.setMaximumWidth(640)
+        self.setDefaultFontForWidget(title)
+        return title
+
+    def createDescriptionLabel(self):
+        label = QLabel('Description:')
+        self.setDefaultFontForWidget(label)
+        return label
+    
+    def createDescriptionField(self):
+        description = QTextEdit()
+        self.setDefaultFontForWidget(description)
+        description.setMaximumHeight(200)
+        description.setMaximumWidth(640)
+        return description
+
+    def createDeadlineLabel(self):
+        label = QLabel('Deadline:')
+        self.setDefaultFontForWidget(label)
+        return label
+
+    def createDeadlineField(self):
+        deadline = QDateEdit()
+        self.setDefaultFontForWidget(deadline)
+        deadline.setMaximumHeight(40)
+        deadline.setMaximumWidth(130)
+        deadline.setDateTime(QDateTime.currentDateTime())
+        deadline.setMaximumDate(QDate(2100, 12, 28))
+        deadline.setCalendarPopup(True)
+        deadline.setFocusPolicy(Qt.ClickFocus)
+        return deadline
+
+    def createIsUrgentLabel(self):
+        label = QLabel('Is urgent?')
+        self.setDefaultFontForWidget(label)
+        return label
+
+    def createIsUrgentField(self):
+        isurgent = QComboBox()
+        self.setDefaultFontForWidget(isurgent)
+        isurgent.setMaximumHeight(40)
+        isurgent.setMaximumWidth(130)
+        isurgent.addItem('Yes')
+        isurgent.addItem('No')
+        return isurgent
+
+    def createSaveButton(self):
+        save = QPushButton('Save')
+        self.setDefaultFontForWidget(save)
+        save.setMaximumHeight(100)
+        save.setMaximumWidth(150)
+        save.clicked.connect(self.saveNewTask)
+        return save
+
+    def createCloseButton(self):
+        close = QPushButton('Close')
+        self.setDefaultFontForWidget(close)
+        close.setMaximumHeight(100)
+        close.setMaximumWidth(150)
+        close.clicked.connect(qApp.quit)
+        return close
+
+    def saveNewTask(self):
+        name = self.title.text()
+        description = self.description.toPlainText()
+        deadline = self.deadline.text()
+        is_urgent = self.isurgent.currentText()
+        addTaskToDb(name, description, deadline, is_urgent)
+        self.refreshWindow()
+        
 
     def createTaskList(self, tasks):
         groupboxLayout = QVBoxLayout()
@@ -310,14 +360,6 @@ class TabWidget(QWidget):
         self.details.outerLayout.addLayout(self.details.bottomLayout)
         self.details.setLayout(self.details.outerLayout)
         self.details.exec_()
-
-    def saveNewTask(self):
-        name = self.title.text()
-        description = self.description.toPlainText()
-        deadline = self.deadline.text()
-        is_urgent = self.isurgent.currentText()
-        addTaskToDb(name, description, deadline, is_urgent)
-        self.refreshWindow()
 
     def saveCurrentTask(self):
         sender = self.sender()
