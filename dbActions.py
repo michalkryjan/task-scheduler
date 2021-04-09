@@ -46,4 +46,3 @@ def addTaskToDb(name, description, deadline, is_urgent):
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-
