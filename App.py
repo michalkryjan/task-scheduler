@@ -1,19 +1,15 @@
-from PyQt5.QtWidgets import qApp, QMainWindow, QApplication, QWidget, QFormLayout, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QTextEdit, QDateEdit, QComboBox, QPushButton, QTabWidget, QScrollArea, QGroupBox, QDialog
-from PyQt5.QtCore import Qt, QDate, QDateTime, QSize
-from PyQt5.QtGui import QFont, QIcon, QPixmap
-import sys, os
-from dbActions import addTaskToDb, startDb
-from Task import Task
-from datetime import date, datetime
-from Layouts import *
+from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtGui import QIcon
+from Layouts import TabWidget
+from dbActions import startDb
+import sys
 
 
 class App(QMainWindow):
     def __init__(self):
         super().__init__()
         startDb()
-        mainWidget = QWidget()
-        mainWidget.setLayout(TabWidgetLayout())
+        mainWidget = TabWidget()
         self.setCentralWidget(mainWidget)
         self.setWindowSize()
         self.setWindowTitle('Task scheduler')

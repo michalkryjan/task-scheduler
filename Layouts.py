@@ -1,11 +1,10 @@
-from PyQt5.QtWidgets import qApp, QMainWindow, QApplication, QWidget, QFormLayout, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QTextEdit, QDateEdit, QComboBox, QPushButton, QTabWidget, QScrollArea, QGroupBox, QDialog
-from PyQt5.QtCore import Qt, QDate, QDateTime, QSize
+from PyQt5.QtWidgets import qApp, QWidget, QFormLayout, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QTextEdit, QDateEdit, QComboBox, QPushButton, QTabWidget, QScrollArea, QDialog
+from PyQt5.QtCore import Qt, QDate, QSize
 from PyQt5.QtGui import QFont, QIcon, QPixmap
-import sys, os
-from dbActions import addTaskToDb, startDb
 from Task import Task
 from GetTasks import GetTasks
 from datetime import date, datetime
+from dbActions import addTaskToDb
 
 
 class Fonts(object):
@@ -22,18 +21,19 @@ class Fonts(object):
         widget.setFont(font)
 
 
-class TabWidgetLayout(QVBoxLayout, Fonts, GetTasks):
+class TabWidget(QWidget, Fonts, GetTasks):
     def __init__(self): 
         super().__init__()
-        self.tabWidget = self.createTabWidget()
-        self.addWidget(self.tabWidget)
+        self.mainLayout = QVBoxLayout()
+        self.createTabWidget()
+        self.setLayout(self.mainLayout)
 
     def createTabWidget(self):
-        tabWidget = QTabWidget()
-        self.setFontForTabs(tabWidget)
-        self.InitMainTabs(tabWidget)
+        self.tabWidget = QTabWidget()
+        self.setFontForTabs(self.tabWidget)
+        self.InitMainTabs(self.tabWidget)
         self.InitCheckYourTasksTabs(self.checkYourTasks)
-        return tabWidget
+        self.mainLayout.addWidget(self.tabWidget)
 
     def setFontForTabs(self, tabs):
         font = QFont()
@@ -48,29 +48,41 @@ class TabWidgetLayout(QVBoxLayout, Fonts, GetTasks):
 
     def InitNewTaskView(self):
         widget = QWidget()
-        newTaskView = NewTaskView()
+        newTaskView = NewTaskView(self.refresh)
         widget.setLayout(newTaskView)
         return widget
 
     def InitCheckYourTasksTabs(self, parentTab):
-        self.createTabWithViewUnder(parentTab, 'All to do', TaskListView(self.getAllTasks()))
-        self.createTabWithViewUnder(parentTab, 'For today', TaskListView(self.getForTodayTasks()))
-        self.createTabWithViewUnder(parentTab, 'For tomorrow', TaskListView(self.getForTomorrowTasks()))
-        self.createTabWithViewUnder(parentTab, 'Urgent', TaskListView(self.getUrgentTasks()))
-        self.createTabWithViewUnder(parentTab, 'Not urgent', TaskListView(self.getNotUrgentTasks()))
-        self.createTabWithViewUnder(parentTab, 'Done', TaskListView(self.getDoneTasks()))
+        self.createTabWithViewUnder(parentTab, 'All to do', TaskListView(self.getAllTasks(), self.refresh))
+        self.createTabWithViewUnder(parentTab, 'For today', TaskListView(self.getForTodayTasks(), self.refresh))
+        self.createTabWithViewUnder(parentTab, 'For tomorrow', TaskListView(self.getForTomorrowTasks(), self.refresh))
+        self.createTabWithViewUnder(parentTab, 'Urgent', TaskListView(self.getUrgentTasks(), self.refresh))
+        self.createTabWithViewUnder(parentTab, 'Not urgent', TaskListView(self.getNotUrgentTasks(), self.refresh))
+        self.createTabWithViewUnder(parentTab, 'Done', TaskListView(self.getDoneTasks(), self.refresh))
 
     def createTabWithViewUnder(self, parentTab, name, taskListLayout):
         widget = QWidget()
         widget.setLayout(taskListLayout)
         parentTab.addTab(widget, name)
 
+    def refresh(self):
+        firstIndex = self.tabWidget.currentIndex()
+        if firstIndex == 1:
+            secondIndex = self.checkYourTasks.currentIndex()
+        for i in reversed(range(self.mainLayout.count())): 
+            self.mainLayout.itemAt(i).widget().setParent(None)
+        self.createTabWidget()
+        if firstIndex == 1:
+            self.tabWidget.setCurrentIndex(1)
+            self.checkYourTasks.setCurrentIndex(secondIndex)
+
 
 class TaskListView(QVBoxLayout, Fonts, GetTasks):
-    def __init__(self, tasks):
+    def __init__(self, tasks, refreshMethod):
         super().__init__() 
         taskList = self.createTaskList(tasks)
         self.addWidget(taskList)
+        self.refreshWindow = refreshMethod
 
     def createTaskList(self, tasks):
         mainLayout = QVBoxLayout()
@@ -124,7 +136,7 @@ class TaskListView(QVBoxLayout, Fonts, GetTasks):
         detailsWindow = self.createDetailsWindow()
         sender = self.sender()
         selectedTask = self.selectOneTask(sender.objectName())
-        selectedTaskView = SelectedTaskView(detailsWindow, selectedTask)
+        selectedTaskView = SelectedTaskView(detailsWindow, selectedTask, self.refreshWindow)
         detailsWindow.setLayout(selectedTaskView)
         detailsWindow.exec_()
 
@@ -156,10 +168,9 @@ class TaskListView(QVBoxLayout, Fonts, GetTasks):
 
     def setAsDone(self):
         sender = self.sender()
-        get = GetTasks()
-        task = get.selectOne(sender.objectName())
+        task = self.selectOneTask(sender.objectName())
         task.setTaskAsDone()
-        self.refresh()
+        self.refreshWindow()
 
 
 class DefaultOneTaskView(QVBoxLayout, Fonts):
@@ -248,8 +259,9 @@ class DefaultOneTaskView(QVBoxLayout, Fonts):
 
 
 class NewTaskView(DefaultOneTaskView):
-    def __init__(self):
+    def __init__(self, refreshMethod):
         super().__init__() 
+        self.refreshWindow = refreshMethod
         self.setMethodsForButtons()
         self.mainLabel.setText('Add a new task')
         self.deadline.setDate(date.today())
@@ -264,12 +276,13 @@ class NewTaskView(DefaultOneTaskView):
         deadline = self.deadline.text()
         isurgent = self.isurgent.currentText()
         addTaskToDb(title, description, deadline, isurgent)
-        self.refresh()
+        self.refreshWindow()
 
 
 class SelectedTaskView(DefaultOneTaskView):
-    def __init__(self, QDialogWindow, selectedTask):
+    def __init__(self, QDialogWindow, selectedTask, refreshMethod):
         super().__init__() 
+        self.refreshWindow = refreshMethod
         self.selectedTask = selectedTask
         self.QDialogWindow = QDialogWindow
         self.mainLabel.setText('Edit task')
@@ -300,7 +313,7 @@ class SelectedTaskView(DefaultOneTaskView):
 
     def deleteTask(self):
         self.selectedTask.deleteTask()
-        self.refresh()
+        self.refreshWindow()
         self.QDialogWindow.close()
 
     def setCurrentDataForFields(self):
