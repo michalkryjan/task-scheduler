@@ -16,7 +16,8 @@ class Task:
         try:
             sqliteConnection = createConnection()
             db = sqliteConnection.cursor()
-            db.execute('UPDATE tasks SET status="done" WHERE id=?',(str(self.id),))
+            query = 'UPDATE tasks SET status="done" WHERE id=?'
+            db.execute(query, (self.id,))
             sqliteConnection.commit()
         except sqlite3.Error as error:
             print("Error while setting a task as done", error)
@@ -28,7 +29,8 @@ class Task:
         try:
             sqliteConnection = createConnection()
             db = sqliteConnection.cursor()
-            db.execute('UPDATE tasks SET name=?, description=?, deadline=?, is_urgent=? WHERE id=?',(str(name), str(description), str(deadline), str(is_urgent), str(self.id),))
+            query = 'UPDATE tasks SET name=?, description=?, deadline=?, is_urgent=? WHERE id=?'
+            db.execute(query, (name, description, deadline, is_urgent, self.id,))
             sqliteConnection.commit()
         except sqlite3.Error as error:
             print("Error while updating a task", error)
@@ -40,7 +42,8 @@ class Task:
         try:
             sqliteConnection = createConnection()
             db = sqliteConnection.cursor()
-            db.execute('DELETE FROM tasks WHERE id=?',(str(self.id),))
+            query = 'DELETE FROM tasks WHERE id=?'
+            db.execute(query, (self.id,))
             sqliteConnection.commit()
         except sqlite3.Error as error:
             print("Error while deleting a task", error)

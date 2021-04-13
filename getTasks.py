@@ -27,7 +27,8 @@ class GetTasks(object):
             sqliteConnection = createConnection()
             db = sqliteConnection.cursor()
             today = date.today().strftime('%d.%m.%Y')
-            db.execute('SELECT * FROM tasks WHERE deadline=? AND status="new" ORDER BY name', (str(today),))
+            query = 'SELECT * FROM tasks WHERE deadline=? AND status="new" ORDER BY name, time_added ASC'
+            db.execute(query, (today,))
             rows = db.fetchall()
         except sqlite3.Error as error:
             print('Error while selecting tasks for today', error)
@@ -46,7 +47,8 @@ class GetTasks(object):
             db = sqliteConnection.cursor()
             tomorrow = date.today() + timedelta(days=1)
             tomorrow = tomorrow.strftime('%d.%m.%Y')
-            db.execute('SELECT * FROM tasks WHERE deadline=? AND status="new" ORDER BY name', (str(tomorrow),))
+            query = 'SELECT * FROM tasks WHERE deadline=? AND status="new" ORDER BY name, time_added ASC'
+            db.execute(query, (tomorrow,))
             rows = db.fetchall()
         except sqlite3.Error as error:
             print('Error while selecting tasks for tomorrow', error)
@@ -63,7 +65,7 @@ class GetTasks(object):
         try:
             sqliteConnection = createConnection()
             db = sqliteConnection.cursor()
-            db.execute('SELECT * FROM tasks WHERE is_urgent="Yes" AND status="new" ORDER BY deadline, name')
+            db.execute('SELECT * FROM tasks WHERE is_urgent="Yes" AND status="new" ORDER BY deadline ASC, name')
             rows = db.fetchall()
         except sqlite3.Error as error:
             print('Error while selecting urgent tasks', error)
@@ -114,7 +116,8 @@ class GetTasks(object):
         try:
             sqliteConnection = createConnection()
             db = sqliteConnection.cursor()
-            db.execute('SELECT * FROM tasks WHERE id=?', (id,))
+            query = 'SELECT * FROM tasks WHERE id=?'
+            db.execute(query, (id,))
             row = db.fetchone()
         except sqlite3.Error as error:
             print('Error while selecting the specified task', error)

@@ -38,7 +38,8 @@ def addTaskToDb(name, description, deadline, is_urgent):
         status = 'new'
         sqliteConnection = createConnection()
         db = sqliteConnection.cursor()
-        db.execute("INSERT INTO tasks(name, description, deadline, is_urgent, time_added, status) VALUES (?, ?, ?, ?, ?, ?)", (str(name), str(description), str(deadline), str(is_urgent), str(time_added), str(status)))
+        query = "INSERT INTO tasks(name, description, deadline, is_urgent, time_added, status) VALUES (?, ?, ?, ?, ?, ?)"
+        db.execute(query, (name, description, deadline, is_urgent, time_added, status,))
         sqliteConnection.commit()
         print('successfully added')
     except sqlite3.Error as error:
