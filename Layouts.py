@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import qApp, QWidget, QFormLayout, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QTextEdit, QDateEdit, QComboBox, QPushButton, QTabWidget, QScrollArea, QDialog
+from PyQt5.QtWidgets import qApp, QWidget, QFormLayout, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QTextEdit, QDateEdit, QComboBox, QPushButton, QTabWidget, QScrollArea, QDialog, QStatusBar
 from PyQt5.QtCore import Qt, QDate, QSize
 from PyQt5.QtGui import QFont, QIcon, QPixmap
 from Task import Task
@@ -22,8 +22,9 @@ class Fonts(object):
 
 
 class TabWidget(QWidget, Fonts, GetTasks):
-    def __init__(self): 
+    def __init__(self, statusBar): 
         super().__init__()
+        self.statusBar = statusBar
         self.mainLayout = QVBoxLayout()
         self.createTabWidget()
         self.setLayout(self.mainLayout)
@@ -48,17 +49,17 @@ class TabWidget(QWidget, Fonts, GetTasks):
 
     def InitNewTaskView(self):
         widget = QWidget()
-        newTaskView = NewTaskView(self.refresh)
+        newTaskView = NewTaskView(self.statusBar, self.refresh)
         widget.setLayout(newTaskView)
         return widget
 
     def InitCheckYourTasksTabs(self, parentTab):
-        self.createTabWithViewUnder(parentTab, 'All to do', TaskListView(self.getAllTasks(), self.refresh))
-        self.createTabWithViewUnder(parentTab, 'For today', TaskListView(self.getForTodayTasks(), self.refresh))
-        self.createTabWithViewUnder(parentTab, 'For tomorrow', TaskListView(self.getForTomorrowTasks(), self.refresh))
-        self.createTabWithViewUnder(parentTab, 'Urgent', TaskListView(self.getUrgentTasks(), self.refresh))
-        self.createTabWithViewUnder(parentTab, 'Not urgent', TaskListView(self.getNotUrgentTasks(), self.refresh))
-        self.createTabWithViewUnder(parentTab, 'Done', TaskListView(self.getDoneTasks(), self.refresh))
+        self.createTabWithViewUnder(parentTab, 'All to do', TaskListView(self.getAllTasks(), self.statusBar, self.refresh))
+        self.createTabWithViewUnder(parentTab, 'For today', TaskListView(self.getForTodayTasks(), self.statusBar, self.refresh))
+        self.createTabWithViewUnder(parentTab, 'For tomorrow', TaskListView(self.getForTomorrowTasks(), self.statusBar, self.refresh))
+        self.createTabWithViewUnder(parentTab, 'Urgent', TaskListView(self.getUrgentTasks(), self.statusBar, self.refresh))
+        self.createTabWithViewUnder(parentTab, 'Not urgent', TaskListView(self.getNotUrgentTasks(), self.statusBar, self.refresh))
+        self.createTabWithViewUnder(parentTab, 'Done', TaskListView(self.getDoneTasks(), self.statusBar, self.refresh))
 
     def createTabWithViewUnder(self, parentTab, name, taskListLayout):
         widget = QWidget()
@@ -78,8 +79,9 @@ class TabWidget(QWidget, Fonts, GetTasks):
 
 
 class TaskListView(QVBoxLayout, Fonts, GetTasks):
-    def __init__(self, tasks, refreshMethod):
+    def __init__(self, tasks, statusBar, refreshMethod):
         super().__init__() 
+        self.statusBar = statusBar
         taskList = self.createTaskList(tasks)
         self.addWidget(taskList)
         self.refreshWindow = refreshMethod
@@ -136,7 +138,7 @@ class TaskListView(QVBoxLayout, Fonts, GetTasks):
         detailsWindow = self.createDetailsWindow()
         sender = self.sender()
         selectedTask = self.selectOneTask(sender.objectName())
-        selectedTaskView = SelectedTaskView(detailsWindow, selectedTask, self.refreshWindow)
+        selectedTaskView = SelectedTaskView(detailsWindow, selectedTask, self.statusBar, self.refreshWindow)
         detailsWindow.setLayout(selectedTaskView)
         detailsWindow.exec_()
 
@@ -171,6 +173,7 @@ class TaskListView(QVBoxLayout, Fonts, GetTasks):
         task = self.selectOneTask(sender.objectName())
         task.setTaskAsDone()
         self.refreshWindow()
+        self.statusBar.msgTaskDone()
 
 
 class DefaultOneTaskView(QVBoxLayout, Fonts):
@@ -259,8 +262,9 @@ class DefaultOneTaskView(QVBoxLayout, Fonts):
 
 
 class NewTaskView(DefaultOneTaskView):
-    def __init__(self, refreshMethod):
+    def __init__(self, statusBar, refreshMethod):
         super().__init__() 
+        self.statusBar = statusBar
         self.refreshWindow = refreshMethod
         self.setMethodsForButtons()
         self.mainLabel.setText('Add a new task')
@@ -277,14 +281,16 @@ class NewTaskView(DefaultOneTaskView):
         isurgent = self.isurgent.currentText()
         addTaskToDb(title, description, deadline, isurgent)
         self.refreshWindow()
+        self.statusBar.msgTaskAdded()
 
 
 class SelectedTaskView(DefaultOneTaskView):
-    def __init__(self, QDialogWindow, selectedTask, refreshMethod):
+    def __init__(self, QDialogWindow, selectedTask, statusBar, refreshMethod):
         super().__init__() 
-        self.refreshWindow = refreshMethod
-        self.selectedTask = selectedTask
         self.QDialogWindow = QDialogWindow
+        self.selectedTask = selectedTask
+        self.statusBar = statusBar
+        self.refreshWindow = refreshMethod
         self.mainLabel.setText('Edit task')
         self.setCurrentDataForFields()
         self.deleteButton = self.createDeleteButton(self.footerLayout)
@@ -310,11 +316,14 @@ class SelectedTaskView(DefaultOneTaskView):
         deadline = self.deadline.text()
         isurgent = self.isurgent.currentText()
         self.selectedTask.updateTask(title, description, deadline, isurgent)
+        self.refreshWindow()
+        self.statusBar.msgTaskUpdated()
 
     def deleteTask(self):
         self.selectedTask.deleteTask()
         self.refreshWindow()
         self.QDialogWindow.close()
+        self.statusBar.msgTaskDeleted()
 
     def setCurrentDataForFields(self):
         self.title.setText(self.selectedTask.name)
@@ -322,3 +331,21 @@ class SelectedTaskView(DefaultOneTaskView):
         self.isurgent.setCurrentText(self.selectedTask.is_urgent)
         d, m, y = map(int, self.selectedTask.deadline.split('.'))
         self.deadline.setDate(QDate(y, m, d))
+
+
+class StatusBar(QStatusBar):
+    def __init__(self):
+        super().__init__()
+        self.setStyleSheet('padding-bottom: 12px; font-size: 16px;')
+
+    def msgTaskAdded(self):
+        self.showMessage('Successfully added!', 3000)
+
+    def msgTaskDone(self):
+        self.showMessage('Good job with finishing the task!', 3000)
+
+    def msgTaskDeleted(self):
+        self.showMessage('Task deleted!', 3000)
+
+    def msgTaskUpdated(self):
+        self.showMessage('Task details updated!', 3000)

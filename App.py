@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtGui import QIcon
-from Layouts import TabWidget
+from Layouts import TabWidget, StatusBar
 from dbActions import startDb
 import sys
 
@@ -9,7 +9,9 @@ class App(QMainWindow):
     def __init__(self):
         super().__init__()
         startDb()
-        mainWidget = TabWidget()
+        statusBar = StatusBar()
+        self.setStatusBar(statusBar)
+        mainWidget = TabWidget(statusBar)
         self.setCentralWidget(mainWidget)
         self.setWindowSize()
         self.setWindowTitle('Task scheduler')
