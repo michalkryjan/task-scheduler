@@ -1,12 +1,12 @@
 import sqlite3
 import os.path
-from datetime import date, datetime
+from datetime import datetime
 
 
 def createConnection():
     conn = None
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    DB_PATH = os.path.join(BASE_DIR, "scheduler.db")
+    DB_PATH = os.path.join(BASE_DIR, "Tasks.db")
     try:
         conn = sqlite3.connect(DB_PATH)
     except sqlite3.Error as e:

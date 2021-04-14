@@ -1,5 +1,5 @@
 import sqlite3
-from dbActions import createConnection, startDb
+from database.DbActions import createConnection
 
 
 class Task:
