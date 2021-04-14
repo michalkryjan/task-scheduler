@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QDate
 from PyQt5.QtWidgets import QPushButton
 from .DefaultOneTaskView import DefaultOneTaskView
-from Fonts import *
+from ..Fonts import *
 
 
 class SelectedTaskView(DefaultOneTaskView):

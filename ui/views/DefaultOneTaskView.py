@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtWidgets import QVBoxLayout, QLabel, QFormLayout, QHBoxLayout, QLineEdit, QTextEdit, QDateEdit, QComboBox, \
     QPushButton
-from Fonts import *
+from ..Fonts import *
 
 
 class DefaultOneTaskView(QVBoxLayout):

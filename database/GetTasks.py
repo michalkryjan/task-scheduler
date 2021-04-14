@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import date, timedelta
 from .DbActions import createConnection
-from Task import Task
+from .Task import Task
 
 
 def getAllTasks():

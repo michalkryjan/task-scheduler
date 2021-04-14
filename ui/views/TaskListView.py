@@ -3,7 +3,11 @@ from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QDialog, QWidget, QScrollArea
 from database.GetTasks import *
 from .SelectedTaskView import SelectedTaskView
+import os
 
+
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
 
 
 class TaskListView(QVBoxLayout):
@@ -33,12 +37,12 @@ class TaskListView(QVBoxLayout):
     def createCategoryIcon(self, task):
         categoryIcon = QLabel()
         if task.status == 'done':
-            categoryIcon.setPixmap(QPixmap('icons/green_square.png'))
+            categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/green_square.png'))
         else:
             if task.is_urgent == 'Yes':
-                categoryIcon.setPixmap(QPixmap('icons/red_square.png'))
+                categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/red_square.png'))
             else:
-                categoryIcon.setPixmap(QPixmap('icons/yellow_square.png'))
+                categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/yellow_square.png'))
         return categoryIcon
 
     def createTaskNameInfo(self, task):
@@ -72,7 +76,7 @@ class TaskListView(QVBoxLayout):
 
     def createDetailsWindow(self):
         window = QDialog()
-        window.setWindowIcon(QIcon('icons/calendar_icon.png'))
+        window.setWindowIcon(QIcon(f'{parentdir}/icons/calendar_icon.png'))
         window.resize(800, 700)
         window.setWindowTitle('Details')
         window.setWindowModality(Qt.ApplicationModal)
@@ -80,8 +84,8 @@ class TaskListView(QVBoxLayout):
 
     def createTaskDoneButton(self, task):
         button = QPushButton()
-        button.setIcon(QIcon('icons/check_icon.png'))
-        button.setIconSize(QSize(20,20))
+        button.setIcon(QIcon(f'{parentdir}/icons/check_icon.png'))
+        button.setIconSize(QSize(20, 20))
         button.setMaximumWidth(40)
         button.setObjectName(str(task.id))
         button.clicked.connect(self.setAsDone)

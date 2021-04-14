@@ -1,16 +1,9 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtGui import QIcon
-from widgets.StatusBar import StatusBar
-from widgets.TabWidget import TabWidget
+from ui.widgets.StatusBar import StatusBar
+from ui.widgets.TabWidget import TabWidget
 from database.DbActions import startDb
-import os, sys
-
-
-# setting paths to import modules
-currentdir = os.path.dirname(os.path.realpath(__file__))
-parentdir = os.path.dirname(currentdir)
-sys.path.append(currentdir)
-sys.path.append(parentdir)
+import sys
 
 
 class App(QMainWindow):
@@ -22,8 +15,8 @@ class App(QMainWindow):
         mainWidget = TabWidget(statusBar)
         self.setCentralWidget(mainWidget)
         self.setWindowSize()
-        self.setWindowTitle('Task scheduler')
-        self.setWindowIcon(QIcon('icons/tasks_icon.png'))
+        self.setWindowTitle('Task Scheduler')
+        self.setWindowIcon(QIcon('ui/icons/tasks_icon.png'))
         self.show()
 
     def setWindowSize(self):

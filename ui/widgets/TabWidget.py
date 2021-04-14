@@ -1,7 +1,7 @@
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget
-from views.NewTaskView import NewTaskView
-from views.TaskListView import TaskListView
+from ..views.NewTaskView import NewTaskView
+from ..views.TaskListView import TaskListView
 from database.GetTasks import *
 
 
