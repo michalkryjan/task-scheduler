@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt, QSize, pyqtSignal
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QDialog, QWidget, QScrollArea
 from database.GetTasks import *
@@ -11,12 +11,13 @@ parentdir = os.path.dirname(currentdir)
 
 
 class TaskListView(QVBoxLayout):
-    def __init__(self, tasks, statusBar, refreshMethod):
+    onRefreshRequest = pyqtSignal()
+
+    def __init__(self, tasks, statusBar):
         super().__init__()
-        self.statusBar = statusBar
         taskList = self.createTaskList(tasks)
         self.addWidget(taskList)
-        self.refreshWindow = refreshMethod
+        self.statusBar = statusBar
 
     def createTaskList(self, tasks):
         mainLayout = QVBoxLayout()
@@ -70,7 +71,8 @@ class TaskListView(QVBoxLayout):
         detailsWindow = self.createDetailsWindow()
         sender = self.sender()
         selectedTask = selectOneTask(sender.objectName())
-        selectedTaskView = SelectedTaskView(detailsWindow, selectedTask, self.statusBar, self.refreshWindow)
+        selectedTaskView = SelectedTaskView(detailsWindow, selectedTask, self.statusBar)
+        selectedTaskView.onRefreshRequest.connect(self.refreshRequest)
         detailsWindow.setLayout(selectedTaskView)
         detailsWindow.exec_()
 
@@ -104,5 +106,14 @@ class TaskListView(QVBoxLayout):
         sender = self.sender()
         task = selectOneTask(sender.objectName())
         task.setTaskAsDone()
-        self.refreshWindow()
+        self.onRefreshRequest.emit()
         self.statusBar.msgTaskDone()
+
+    def subscribeForRefreshEvent(self, method):
+        self.onRefreshRequest.connect(method)
+
+    def unsubscribeFromRefreshEvent(self, method):
+        self.onRefreshRequest.disconnect(method)
+
+    def refreshRequest(self):
+        self.onRefreshRequest.emit()

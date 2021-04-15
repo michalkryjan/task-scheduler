@@ -1,16 +1,17 @@
-from PyQt5.QtCore import QDate
+from PyQt5.QtCore import QDate, pyqtSignal
 from PyQt5.QtWidgets import QPushButton
 from .DefaultOneTaskView import DefaultOneTaskView
 from ..Fonts import *
 
 
 class SelectedTaskView(DefaultOneTaskView):
-    def __init__(self, QDialogWindow, selectedTask, statusBar, refreshMethod):
+    onRefreshRequest = pyqtSignal()
+
+    def __init__(self, QDialogWindow, selectedTask, statusBar):
         super().__init__()
         self.QDialogWindow = QDialogWindow
         self.selectedTask = selectedTask
         self.statusBar = statusBar
-        self.refreshWindow = refreshMethod
         self.mainLabel.setText('Edit task')
         self.setCurrentDataForFields()
         self.deleteButton = self.createDeleteButton(self.footerLayout)
@@ -27,7 +28,7 @@ class SelectedTaskView(DefaultOneTaskView):
 
     def setMethodsForButtons(self):
         self.saveButton.clicked.connect(self.saveSelectedTask)
-        self.closeButton.clicked.connect(self.QDialogWindow.close)
+        self.closeButton.clicked.connect(self.closeDialogWindow)
         self.deleteButton.clicked.connect(self.deleteTask)
 
     def saveSelectedTask(self):
@@ -36,12 +37,16 @@ class SelectedTaskView(DefaultOneTaskView):
         deadline = self.deadline.text()
         isurgent = self.isurgent.currentText()
         self.selectedTask.updateTask(title, description, deadline, isurgent)
-        self.refreshWindow()
+        self.onRefreshRequest.emit()
         self.statusBar.msgTaskUpdated()
+
+    def closeDialogWindow(self):
+        self.QDialogWindow.close()
+        self.onRefreshRequest.disconnect()
 
     def deleteTask(self):
         self.selectedTask.deleteTask()
-        self.refreshWindow()
+        self.onRefreshRequest.emit()
         self.QDialogWindow.close()
         self.statusBar.msgTaskDeleted()
 

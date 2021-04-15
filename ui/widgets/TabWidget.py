@@ -10,6 +10,14 @@ class TabWidget(QWidget):
         super().__init__()
         self.statusBar = statusBar
         self.mainLayout = QVBoxLayout()
+        self.tabs = {
+            'All to do': getAllTasks,
+            'For today': getForTodayTasks,
+            'For tomorrow': getForTomorrowTasks,
+            'Urgent': getUrgentTasks,
+            'Not urgent': getNotUrgentTasks,
+            'Done': getDoneTasks
+        }
         self.createTabWidget()
         self.setLayout(self.mainLayout)
 
@@ -38,18 +46,12 @@ class TabWidget(QWidget):
         return widget
 
     def InitCheckYourTasksTabs(self, parentTab):
-        allToDoTabView = TaskListView(getAllTasks(), self.statusBar, self.refresh)
-        forTodayTabView = TaskListView(getForTodayTasks(), self.statusBar, self.refresh)
-        forTomorrowTabView = TaskListView(getForTomorrowTasks(), self.statusBar, self.refresh)
-        urgentTabView = TaskListView(getUrgentTasks(), self.statusBar, self.refresh)
-        notUrgentTabView = TaskListView(getNotUrgentTasks(), self.statusBar, self.refresh)
-        doneTabView = TaskListView(getDoneTasks(), self.statusBar, self.refresh)
-        self.createTabWithViewUnder(parentTab, 'All to do', allToDoTabView)
-        self.createTabWithViewUnder(parentTab, 'For today', forTodayTabView)
-        self.createTabWithViewUnder(parentTab, 'For tomorrow', forTomorrowTabView)
-        self.createTabWithViewUnder(parentTab, 'Urgent', urgentTabView)
-        self.createTabWithViewUnder(parentTab, 'Not urgent', notUrgentTabView)
-        self.createTabWithViewUnder(parentTab, 'Done', doneTabView)
+        self.listOfTabs = []
+        for tab in self.tabs.items():
+            tabView = TaskListView(tab[1](), self.statusBar)
+            self.listOfTabs.append(tabView)
+            tabView.subscribeForRefreshEvent(self.refresh)
+            self.createTabWithViewUnder(parentTab, tab[0], tabView)
 
     def createTabWithViewUnder(self, parentTab, name, taskListLayout):
         widget = QWidget()
@@ -57,6 +59,8 @@ class TabWidget(QWidget):
         parentTab.addTab(widget, name)
 
     def refresh(self):
+        for tab in self.listOfTabs:
+            tab.unsubscribeFromRefreshEvent(self.refresh)
         firstIndex = self.tabWidget.currentIndex()
         if firstIndex == 1:
             secondIndex = self.checkYourTasks.currentIndex()
