@@ -18,19 +18,15 @@ class DefaultEmail(EmailMessage):
         now = datetime.now()
         dayName = now.strftime('%A')
         date = now.strftime('%d.%m.%Y')
-        subject = f'Your tasks for {dayName} - {date}'
+        subject = f'Your to-do list for {dayName} - {date}'
         return subject
 
     def createPlainContent(self):
         tasks = getForTodayTasks()
-        content = '''Hey there! 
-
-        Here are your tasks for today:
-
-        '''
+        content = 'Hi there! \n\nHere are your tasks for today:\n\n'
         for task in tasks:
             content += f'{task.name}\n'
-        content += '\nHave a good day! ;)'
+        content += '\nThat`s all. Good luck and have a nice day! ;)'
         return content
 
     def createHtmlContent(self):

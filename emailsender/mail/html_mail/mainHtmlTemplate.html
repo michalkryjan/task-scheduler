@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Bitter:400,700" rel="stylesheet" type="text/css">
+        <style>
+            body {
+                font-family: Bitter;
+            }
+            div {
+                max-width: 500px;
+                margin: 3px auto;
+            }
+            .hTwo {
+                font-size:20px;
+                margin-top:20px;
+                padding:40px 10px;
+            }
+            img {
+                max-width:300px;
+                margin: 10px;
+            }
+            @media only screen and (max-width: 340px) {
+                img {
+                    max-width:200px;
+                }
+            }
+            div.tasks {
+                max-width: 500px;
+                padding: 15px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: flex-start;
+                border: 1px solid black;
+                border-radius: 25px;
+            }
+            div.taskName {
+                width: 120px;
+                flex-grow: 1;
+                height: auto;
+                font-size: 14px;
+                font-weight: bold;
+            }
+            div.taskDescription {
+                padding: 0px 5px;
+                margin-bottom: 10px;
+                height:auto;
+                font-size: 11px;
+            }
+        </style>
+    </head>
+    <body>
+    <div style="display: flex; justify-content: center">
+        <img src="images/todo.png" alt="todoimage">
+    </div>
+    <div>
+        <h1 style="font-size:36px; text-align:center;">Hi there!</h1>
+    </div>
+    <div><h2 class="hTwo">Here are your tasks for today.</h2></div>
+    <div class="tasks">
+    <!--HERE GO TASKS-->
+    </div>
+    <div><h2 class="hTwo">That's all. Good luck and have a nice day! ;)</h2></div>
+    </body>
+</html>

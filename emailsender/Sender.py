@@ -2,9 +2,7 @@ from dotenv import load_dotenv
 import os
 import ssl
 import smtplib
-import sys
-sys.path.append('./')
-from emailsender.DefaultEmail import DefaultEmail
+from mail.DefaultEmail import DefaultEmail
 
 load_dotenv()
 
