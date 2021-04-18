@@ -2,7 +2,8 @@ from dotenv import load_dotenv
 import os
 import ssl
 import smtplib
-from mail.DefaultEmail import DefaultEmail
+from emailsender.DefaultEmail import DefaultEmail
+
 
 load_dotenv()
 
@@ -15,9 +16,9 @@ try:
     server.starttls(context=context)
     server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
 
-    email = DefaultEmail()
-    email.setFromTo(EMAIL_ADDRESS, EMAIL_ADDRESS)
-    server.send_message(email)
+    mail = DefaultEmail(EMAIL_ADDRESS, EMAIL_ADDRESS)
+    email = mail.email
+    server.sendmail(EMAIL_ADDRESS, EMAIL_ADDRESS, email.as_string())
 except Exception as e:
     print(e)
 finally:
