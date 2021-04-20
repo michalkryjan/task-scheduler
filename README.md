@@ -25,3 +25,6 @@ To get emails with today's to-do list you have to download `emailsender` directo
 
 ## From me
 I currently work on simplifying the process of setting up the `email sender` feature. Its settings will be available from the user interface window. In settings window you'll be able to enter your email address, turn on sending emails everyday, set time when you'd like to get them and my app will do the rest for you. That's why `If u want to use email sender feature` section is temporary. Also full application will be able as `.exe` file. Then I will add a feature of running the app with keybind. It will allow to add a new task really fast and convenient. I'm working on it, so new update coming soon... 
+
+## How automatically generated email looks
+<img src="email_preview.png" alt="email preview image">
