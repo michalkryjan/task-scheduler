@@ -38,6 +38,6 @@ I currently work on simplifying the process of setting up the `email sender` fea
 
 ### How automatically generated email looks like?
 
-It's responsive and on mobile phone looks even better.
+It's a desktop version of email, but it's responsive and on mobile phone looks even better.
 
 <img src="preview_screenshots/email.png" alt="email preview screenshot" style=" width: 50%; height: auto;">
