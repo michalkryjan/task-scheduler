@@ -11,7 +11,7 @@ To use the user interface and manage your tasks, you just have to download all t
 To get emails with today's to-do list you have to download `emailsender` directory. Then follow these steps:
 
 1. You need to have Gmail Account.
-2. You need to allow "less secure apps" in your Gmail account if you want to get emails with list of tasks everyday. Here is the link to do that: [https://myaccount.google.com/lesssecureapps](https://myaccount.google.com/lesssecureapps)
+2. You need to allow "less secure apps" in your Gmail account. Here is the link to do that: [https://myaccount.google.com/lesssecureapps](https://myaccount.google.com/lesssecureapps)
 3. Then you have to create a new app in your account: [https://myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
 4. When you get your app password then in directory `/emailsender/` you should create `.env` file with content similiar to this example:
 
@@ -19,9 +19,7 @@ To get emails with today's to-do list you have to download `emailsender` directo
 
 `EMAIL_PASSWORD = 'your app password goes here'`
 
-5. If you run the script in venv you should also install dotenv package. Here is the command to run in the compiler terminal to do that: `pip install python-dotenv`.
-
-6. To get an email with today's to-do list you have to run `Sender.py`.
+5. To get an email with today's to-do list you have to run `Sender.py`.
 
 ## In the next updates
 I currently work on simplifying the process of setting up the `email sender` feature. Its settings will be available from the user interface window. In settings window you'll be able to enter your email address, turn on sending emails everyday and my app will do the rest for you. That's why `If u want to use email sender feature` section is temporary. Also full application will be able as `.exe` file. Then I will add a feature of running the view of adding a new task with keybind. I'm working on it, so new update coming soon... 
