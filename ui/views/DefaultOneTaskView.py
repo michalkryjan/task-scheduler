@@ -21,12 +21,12 @@ class DefaultOneTaskView(QVBoxLayout):
         self.title = self.createTitleField()
         self.description = self.createDescriptionField()
         self.deadline = self.createDeadlineField()
-        self.isurgent = self.createIsUrgentField()
+        self.priority = self.createPriorityField()
         bodyLayout = QFormLayout()
         bodyLayout.addRow(self.createDefaultLabel('Title:'), self.title)
         bodyLayout.addRow(self.createDefaultLabel('Description:'), self.description)
         bodyLayout.addRow(self.createDefaultLabel('Deadline:'), self.deadline)
-        bodyLayout.addRow(self.createDefaultLabel('Is urgent?'), self.isurgent)
+        bodyLayout.addRow(self.createDefaultLabel('Priority:'), self.priority)
         return bodyLayout
 
     def createFooterLayout(self):
@@ -65,14 +65,14 @@ class DefaultOneTaskView(QVBoxLayout):
         setDefaultFontForWidget(deadline)
         return deadline
 
-    def createIsUrgentField(self):
-        isurgent = QComboBox()
-        isurgent.setMaximumHeight(40)
-        isurgent.setMaximumWidth(130)
-        isurgent.addItem('Yes')
-        isurgent.addItem('No')
-        setDefaultFontForWidget(isurgent)
-        return isurgent
+    def createPriorityField(self):
+        priority = QComboBox()
+        priority.setMaximumHeight(40)
+        priority.setMaximumWidth(130)
+        for i in range(1, 6, 1):
+            priority.addItem(f'{i}')
+        setDefaultFontForWidget(priority)
+        return priority
 
     def createSaveButton(self):
         button = QPushButton('Save')

@@ -35,8 +35,8 @@ class SelectedTaskView(DefaultOneTaskView):
         title = self.title.text()
         description = self.description.toPlainText()
         deadline = self.deadline.text()
-        isurgent = self.isurgent.currentText()
-        self.selectedTask.updateTask(title, description, deadline, isurgent)
+        priority = self.priority.currentText()
+        self.selectedTask.updateTask(title, description, deadline, priority)
         self.onRefreshRequest.emit()
         self.statusBar.msgTaskUpdated()
 
@@ -53,6 +53,6 @@ class SelectedTaskView(DefaultOneTaskView):
     def setCurrentDataForFields(self):
         self.title.setText(self.selectedTask.name)
         self.description.setText(self.selectedTask.description)
-        self.isurgent.setCurrentText(self.selectedTask.is_urgent)
+        self.priority.setCurrentText(self.selectedTask.priority)
         d, m, y = map(int, self.selectedTask.deadline.split('.'))
         self.deadline.setDate(QDate(y, m, d))

@@ -3,13 +3,12 @@ from .DbActions import createConnection
 
 
 class Task:
-    def __init__(self, id, name, description, deadline, is_urgent, time_added, status):
+    def __init__(self, id, name, description, deadline, priority, status):
         self.id = id
         self.name = name
         self.description = description
         self.deadline = deadline
-        self.is_urgent = is_urgent
-        self.time_added = time_added
+        self.priority = priority
         self.status = status
 
     def setTaskAsDone(self):
@@ -25,12 +24,12 @@ class Task:
             if sqliteConnection:
                 sqliteConnection.close()
 
-    def updateTask(self, name, description, deadline, is_urgent):
+    def updateTask(self, name, description, deadline, priority):
         try:
             sqliteConnection = createConnection()
             db = sqliteConnection.cursor()
-            query = 'UPDATE tasks SET name=?, description=?, deadline=?, is_urgent=? WHERE id=?'
-            db.execute(query, (name, description, deadline, is_urgent, self.id,))
+            query = 'UPDATE tasks SET name=?, description=?, deadline=?, priority=? WHERE id=?'
+            db.execute(query, (name, description, deadline, priority, self.id,))
             sqliteConnection.commit()
         except sqlite3.Error as error:
             print("Error while updating a task", error)

@@ -8,7 +8,7 @@ def getAllTasks():
     try:
         sqliteConnection = createConnection()
         db = sqliteConnection.cursor()
-        db.execute('SELECT * FROM tasks WHERE status="new" ORDER BY deadline ASC, name')
+        db.execute('SELECT * FROM tasks WHERE status="new" ORDER BY deadline ASC, priority DESC, name')
         rows = db.fetchall()
     except sqlite3.Error as error:
         print('Error while selecting all tasks', error)
@@ -17,7 +17,7 @@ def getAllTasks():
             sqliteConnection.close()
         tasks = []
         for row in rows:
-            task = Task(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+            task = Task(row[0], row[1], row[2], row[3], row[4], row[5])
             tasks.append(task)
         return tasks
 
@@ -27,7 +27,7 @@ def getForTodayTasks():
         sqliteConnection = createConnection()
         db = sqliteConnection.cursor()
         today = date.today().strftime('%d.%m.%Y')
-        query = 'SELECT * FROM tasks WHERE deadline=? AND status="new" ORDER BY name, time_added ASC'
+        query = 'SELECT * FROM tasks WHERE deadline=? AND status="new" ORDER BY priority DESC, name ASC'
         db.execute(query, (today,))
         rows = db.fetchall()
     except sqlite3.Error as error:
@@ -37,7 +37,7 @@ def getForTodayTasks():
             sqliteConnection.close()
         tasks = []
         for row in rows:
-            task = Task(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+            task = Task(row[0], row[1], row[2], row[3], row[4], row[5])
             tasks.append(task)
         return tasks
 
@@ -48,7 +48,7 @@ def getForTomorrowTasks():
         db = sqliteConnection.cursor()
         tomorrow = date.today() + timedelta(days=1)
         tomorrow = tomorrow.strftime('%d.%m.%Y')
-        query = 'SELECT * FROM tasks WHERE deadline=? AND status="new" ORDER BY name, time_added ASC'
+        query = 'SELECT * FROM tasks WHERE deadline=? AND status="new" ORDER BY priority DESC, name ASC'
         db.execute(query, (tomorrow,))
         rows = db.fetchall()
     except sqlite3.Error as error:
@@ -58,16 +58,16 @@ def getForTomorrowTasks():
             sqliteConnection.close()
         tasks = []
         for row in rows:
-            task = Task(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+            task = Task(row[0], row[1], row[2], row[3], row[4], row[5])
             tasks.append(task)
         return tasks
 
 
-def getUrgentTasks():
+def getHighestPriorityTasks():
     try:
         sqliteConnection = createConnection()
         db = sqliteConnection.cursor()
-        db.execute('SELECT * FROM tasks WHERE is_urgent="Yes" AND status="new" ORDER BY deadline ASC, name')
+        db.execute('SELECT * FROM tasks WHERE priority="5" AND status="new" ORDER BY deadline ASC, name')
         rows = db.fetchall()
     except sqlite3.Error as error:
         print('Error while selecting urgent tasks', error)
@@ -76,25 +76,7 @@ def getUrgentTasks():
             sqliteConnection.close()
         tasks = []
         for row in rows:
-            task = Task(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
-            tasks.append(task)
-        return tasks
-
-
-def getNotUrgentTasks():
-    try:
-        sqliteConnection = createConnection()
-        db = sqliteConnection.cursor()
-        db.execute('SELECT * FROM tasks WHERE is_urgent="No" AND status="new" ORDER BY deadline ASC, name')
-        rows = db.fetchall()
-    except sqlite3.Error as error:
-        print('Error while selecting not urgent tasks', error)
-    finally:
-        if sqliteConnection:
-            sqliteConnection.close()
-        tasks = []
-        for row in rows:
-            task = Task(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+            task = Task(row[0], row[1], row[2], row[3], row[4], row[5])
             tasks.append(task)
         return tasks
 
@@ -103,7 +85,7 @@ def getDoneTasks():
     try:
         sqliteConnection = createConnection()
         db = sqliteConnection.cursor()
-        db.execute('SELECT * FROM tasks WHERE status="done" ORDER BY deadline ASC, name')
+        db.execute('SELECT * FROM tasks WHERE status="done" ORDER BY priority DESC, deadline ASC, name')
         rows = db.fetchall()
     except sqlite3.Error as error:
         print('Error while selecting done tasks', error)
@@ -112,7 +94,7 @@ def getDoneTasks():
             sqliteConnection.close()
         tasks = []
         for row in rows:
-            task = Task(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+            task = Task(row[0], row[1], row[2], row[3], row[4], row[5])
             tasks.append(task)
         return tasks
 
@@ -129,5 +111,5 @@ def selectOneTask(id):
     finally:
         if sqliteConnection:
             sqliteConnection.close()
-        task = Task(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+        task = Task(row[0], row[1], row[2], row[3], row[4], row[5])
         return task

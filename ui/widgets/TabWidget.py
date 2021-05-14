@@ -14,8 +14,7 @@ class TabWidget(QWidget):
             'All to do': getAllTasks,
             'For today': getForTodayTasks,
             'For tomorrow': getForTomorrowTasks,
-            'Urgent': getUrgentTasks,
-            'Not urgent': getNotUrgentTasks,
+            'Highest priority': getHighestPriorityTasks,
             'Done': getDoneTasks
         }
         self.createTabWidget()

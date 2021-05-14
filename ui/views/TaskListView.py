@@ -40,7 +40,7 @@ class TaskListView(QVBoxLayout):
         if task.status == 'done':
             categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/green_square.png'))
         else:
-            if task.is_urgent == 'Yes':
+            if task.priority == '5':
                 categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/red_square.png'))
             else:
                 categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/yellow_square.png'))

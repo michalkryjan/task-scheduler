@@ -13,6 +13,7 @@ def createConnection():
         print(e)
     return conn
 
+
 def startDb():
     sqliteConnection = createConnection()
     try:
@@ -22,8 +23,7 @@ def startDb():
                                         name TEXT NOT NULL,
                                         description TEXT,
                                         deadline DATETIME NOT NULL,
-                                        is_urgent TEXT NOT NULL,
-                                        time_added DATETIME NOT NULL,
+                                        priority TEXT NOT NULL,
                                         status TEXT NOT NULL);'''
         db.execute(create_table_query)
     except sqlite3.Error as error:
@@ -32,14 +32,14 @@ def startDb():
         if sqliteConnection:
             sqliteConnection.close()
 
-def addTaskToDb(name, description, deadline, is_urgent):
+
+def addTaskToDb(name, description, deadline, priority):
     try:
-        time_added = datetime.now()
         status = 'new'
         sqliteConnection = createConnection()
         db = sqliteConnection.cursor()
-        query = "INSERT INTO tasks(name, description, deadline, is_urgent, time_added, status) VALUES (?, ?, ?, ?, ?, ?)"
-        db.execute(query, (name, description, deadline, is_urgent, time_added, status,))
+        query = "INSERT INTO tasks(name, description, deadline, priority, status) VALUES (?, ?, ?, ?, ?)"
+        db.execute(query, (name, description, deadline, priority, status))
         sqliteConnection.commit()
     except sqlite3.Error as error:
         print("Error while adding a new task to db", error)
