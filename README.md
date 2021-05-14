@@ -1,6 +1,6 @@
 # Task Scheduler
 ## Description
-It's your own task organizer. If you are a busy person and you want to make better use of your time, this is a desktop app for you. In Task Scheduler you can add new tasks with descriptions and deadlines and then save it to database. At any moment you have access to your assignments, you can manage them and better plan your day. When you wake up, all you have to do is to check your email box and read today's to-do list which was sent by script. Easy and convenient.
+It's your own task organizer. If you are a busy person and you want to make better use of your time, this is a desktop app for you. In Task Scheduler you can add new tasks with descriptions and deadlines and then save it to database. At any moment you have access to your assignments, you can manage them and better plan your day. When you turn on your computer in the morning, all you have to do is to check your email box and read today's to-do list which was sent by script. Easy and convenient.
 
 ## Quick Guide
 
@@ -24,7 +24,7 @@ To get emails with today's to-do list you have to download `emailsender` directo
 6. To get an email with today's to-do list you have to run `Sender.py`.
 
 ## In the next updates
-I currently work on simplifying the process of setting up the `email sender` feature. Its settings will be available from the user interface window. In settings window you'll be able to enter your email address, turn on sending emails everyday, set time when you'd like to get them and my app will do the rest for you. That's why `If u want to use email sender feature` section is temporary. Also full application will be able as `.exe` file. Then I will add a feature of running the app with keybind. It will allow to add a new task really fast and convenient. I'm working on it, so new update coming soon... 
+I currently work on simplifying the process of setting up the `email sender` feature. Its settings will be available from the user interface window. In settings window you'll be able to enter your email address, turn on sending emails everyday and my app will do the rest for you. That's why `If u want to use email sender feature` section is temporary. Also full application will be able as `.exe` file. Then I will add a feature of running the view of adding a new task with keybind. I'm working on it, so new update coming soon... 
 
 ## Preview screenshots
 
