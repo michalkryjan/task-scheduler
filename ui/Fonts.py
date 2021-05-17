@@ -12,3 +12,9 @@ def setBiggerFontForWidget(widget):
     font.setFamily('Sitka Small')
     font.setPointSize(20)
     widget.setFont(font)
+
+def setSettingsDefaultFont(widget):
+    font = QFont()
+    font.setFamily('Sitka Display')
+    font.setPointSize(9)
+    widget.setFont(font)

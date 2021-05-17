@@ -2,6 +2,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget
 from ..views.NewTaskView import NewTaskView
 from ..views.TaskListView import TaskListView
+from ..views.SettingsView import SettingsView
 from database.GetTasks import *
 
 
@@ -55,6 +56,8 @@ class TabWidget(QWidget):
 
     def InitSettingsView(self):
         widget = QWidget()
+        settingsView = SettingsView()
+        widget.setLayout(settingsView)
         return widget
 
     def createTabWithViewUnder(self, parentTab, name, taskListLayout):

@@ -7,22 +7,23 @@ from ..Fonts import *
 class DefaultOneTaskView(QVBoxLayout):
     def __init__(self):
         super().__init__()
-        self.createMainLabel()
+        self.mainLabel = self.createMainLabel()
         self.addWidget(self.mainLabel, alignment=Qt.AlignCenter)
         self.addLayout(self.createBodyLayout())
-        self.createFooterLayout()
+        self.footerLayout = self.createFooterLayout()
         self.addLayout(self.footerLayout)
 
     def createMainLabel(self):
-        self.mainLabel = QLabel()
-        setBiggerFontForWidget(self.mainLabel)
+        mainLabel = QLabel()
+        setBiggerFontForWidget(mainLabel)
+        return mainLabel
 
     def createBodyLayout(self):
+        bodyLayout = QFormLayout()
         self.title = self.createTitleField()
         self.description = self.createDescriptionField()
         self.deadline = self.createDeadlineField()
         self.priority = self.createPriorityField()
-        bodyLayout = QFormLayout()
         bodyLayout.addRow(self.createDefaultLabel('Title:'), self.title)
         bodyLayout.addRow(self.createDefaultLabel('Description:'), self.description)
         bodyLayout.addRow(self.createDefaultLabel('Deadline:'), self.deadline)
@@ -30,11 +31,12 @@ class DefaultOneTaskView(QVBoxLayout):
         return bodyLayout
 
     def createFooterLayout(self):
+        footerLayout = QHBoxLayout()
         self.saveButton = self.createSaveButton()
         self.closeButton = self.createCloseButton()
-        self.footerLayout = QHBoxLayout()
-        self.footerLayout.addWidget(self.saveButton)
-        self.footerLayout.addWidget(self.closeButton)
+        footerLayout.addWidget(self.saveButton)
+        footerLayout.addWidget(self.closeButton)
+        return footerLayout
 
     def createDefaultLabel(self, content):
         label = QLabel(content)
