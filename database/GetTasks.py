@@ -67,7 +67,7 @@ def getHighestPriorityTasks():
     try:
         sqliteConnection = createConnection()
         db = sqliteConnection.cursor()
-        db.execute('SELECT * FROM tasks WHERE priority="5" AND status="new" ORDER BY deadline ASC, name')
+        db.execute('SELECT * FROM tasks WHERE priority="4" AND status="new" ORDER BY deadline ASC, name')
         rows = db.fetchall()
     except sqlite3.Error as error:
         print('Error while selecting urgent tasks', error)

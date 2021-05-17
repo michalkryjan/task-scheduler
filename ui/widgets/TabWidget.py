@@ -37,6 +37,7 @@ class TabWidget(QWidget):
         self.checkYourTasks = QTabWidget()
         tabWidget.addTab(self.InitNewTaskView(), 'New task')
         tabWidget.addTab(self.checkYourTasks, 'Check your tasks')
+        tabWidget.addTab(self.InitSettingsView(), 'Settings')
 
     def InitNewTaskView(self):
         widget = QWidget()
@@ -51,6 +52,10 @@ class TabWidget(QWidget):
             self.listOfTabs.append(tabView)
             tabView.subscribeForRefreshEvent(self.refresh)
             self.createTabWithViewUnder(parentTab, tab[0], tabView)
+
+    def InitSettingsView(self):
+        widget = QWidget()
+        return widget
 
     def createTabWithViewUnder(self, parentTab, name, taskListLayout):
         widget = QWidget()

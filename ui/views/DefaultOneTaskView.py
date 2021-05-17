@@ -69,7 +69,7 @@ class DefaultOneTaskView(QVBoxLayout):
         priority = QComboBox()
         priority.setMaximumHeight(40)
         priority.setMaximumWidth(130)
-        for i in range(1, 6, 1):
+        for i in range(1, 5, 1):
             priority.addItem(f'{i}')
         setDefaultFontForWidget(priority)
         return priority

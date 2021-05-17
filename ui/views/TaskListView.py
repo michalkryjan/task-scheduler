@@ -38,12 +38,16 @@ class TaskListView(QVBoxLayout):
     def createCategoryIcon(self, task):
         categoryIcon = QLabel()
         if task.status == 'done':
-            categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/green_square.png'))
+            categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/done.png'))
         else:
-            if task.priority == '5':
-                categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/red_square.png'))
-            else:
-                categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/yellow_square.png'))
+            if task.priority == '4':
+                categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/priority_4.png'))
+            elif task.priority == '3':
+                categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/priority_3.png'))
+            elif task.priority == '2':
+                categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/priority_2.png'))
+            elif task.priority == '1':
+                categoryIcon.setPixmap(QPixmap(f'{parentdir}/icons/priority_1.png'))
         return categoryIcon
 
     def createTaskNameInfo(self, task):
