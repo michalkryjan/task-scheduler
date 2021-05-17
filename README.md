@@ -1,6 +1,6 @@
 # Task Scheduler
 ## Description
-It's your own task organizer. If you are a busy person and you want to make better use of your time, this is a desktop app for you. In Task Scheduler you can add new tasks with descriptions and deadlines and then save it to database. At any moment you have access to your assignments, you can manage them and better plan your day. When you turn on your computer in the morning, all you have to do is to check your email box and read today's to-do list which was sent by script. Easy and convenient.
+It's your own task organizer. If you are a busy person and you want to make better use of your time, this is a desktop app for you. In Task Scheduler you can add new task with description and deadline, set its priority and then save it to database. At any moment you have access to your assignments, you can manage them and better plan your day. When you turn on your computer in the morning, all you have to do is to check your email box and read today's to-do list which was sent by script. Easy and convenient.
 
 ## Quick Guide
 
