@@ -52,13 +52,16 @@ class SettingsView(QVBoxLayout):
     def createSenderToggle(self):
         layout = QHBoxLayout()
         layout.setContentsMargins(10, 5, 0, 0)
-        layout.addWidget(self.createEnableButton())
-        layout.addWidget(self.createDisableButton())
+        self.enableButton = self.createEnableButton()
+        self.disableButton = self.createDisableButton()
+        layout.addWidget(self.enableButton)
+        layout.addWidget(self.disableButton)
         return layout
 
     def createEnableButton(self):
         button = QPushButton('Yes')
         button.clicked.connect(self.signals.showMenu.emit)
+        button.setStyleSheet("background-color: #dfe4ea;")
         self.setMaxSizeForWidget(button, 30, 60)
         setSettingsDefaultFont(button)
         return button
@@ -66,6 +69,7 @@ class SettingsView(QVBoxLayout):
     def createDisableButton(self):
         button = QPushButton('No')
         button.clicked.connect(self.signals.hideMenu.emit)
+        button.setStyleSheet("background-color: #7bed9f;")
         self.setMaxSizeForWidget(button, 30, 60)
         setSettingsDefaultFont(button)
         return button
@@ -79,12 +83,16 @@ class SettingsView(QVBoxLayout):
         return box
 
     def showAdditionalMenu(self):
+        self.enableButton.setStyleSheet("background-color: #7bed9f;")
+        self.disableButton.setStyleSheet("background-color: #dfe4ea;")
         if self.additionalLayout.count() == 0:
             label = QLabel('Test label')
             setSettingsDefaultFont(label)
             self.additionalLayout.addRow(label)
 
     def hideAdditionalMenu(self):
+        self.enableButton.setStyleSheet("background-color: #dfe4ea;")
+        self.disableButton.setStyleSheet("background-color: #7bed9f;")
         if self.additionalLayout.count() != 0:
             for i in reversed(range(self.additionalLayout.count())):
                 self.additionalLayout.itemAt(i).widget().setParent(None)
