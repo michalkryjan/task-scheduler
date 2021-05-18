@@ -13,9 +13,12 @@ class SettingsView(QVBoxLayout):
     def __init__(self):
         super().__init__()
         self.signals = SettingsSignals()
+        self.additionalLayout = QFormLayout()
         self.addLayout(self.createMainLayout())
-        self.addLayout(self.createAdditionalLayout())
-        self.saveButton = self.createSaveButton()
+        self.addLayout(self.additionalLayout)
+        self.addLayout(self.createSaveButton())
+        self.signals.showMenu.connect(self.showAdditionalMenu)
+        self.signals.hideMenu.connect(self.hideAdditionalMenu)
 
     def createMainLayout(self):
         mainLayout = QFormLayout()
@@ -34,7 +37,8 @@ class SettingsView(QVBoxLayout):
 
     def createShortcutField(self):
         field = QKeySequenceEdit()
-        self.setMaxSizeForWidget(field, 70, 300)
+        field.setContentsMargins(10, 5, 0, 0)
+        self.setMaxSizeForWidget(field, 70, 400)
         setSettingsDefaultFont(field)
         return field
 
@@ -47,29 +51,43 @@ class SettingsView(QVBoxLayout):
 
     def createSenderToggle(self):
         layout = QHBoxLayout()
+        layout.setContentsMargins(10, 5, 0, 0)
         layout.addWidget(self.createEnableButton())
         layout.addWidget(self.createDisableButton())
         return layout
 
     def createEnableButton(self):
         button = QPushButton('Yes')
+        button.clicked.connect(self.signals.showMenu.emit)
         self.setMaxSizeForWidget(button, 30, 60)
         setSettingsDefaultFont(button)
         return button
 
     def createDisableButton(self):
         button = QPushButton('No')
+        button.clicked.connect(self.signals.hideMenu.emit)
         self.setMaxSizeForWidget(button, 30, 60)
         setSettingsDefaultFont(button)
         return button
 
-    def createAdditionalLayout(self):
-        additionalLayout = QFormLayout()
-        return additionalLayout
-
     def createSaveButton(self):
-        saveButton = QPushButton()
-        return saveButton
+        box = QHBoxLayout()
+        button = QPushButton('Save')
+        self.setMaxSizeForWidget(button, 35, 80)
+        setDefaultFontForWidget(button)
+        box.addWidget(button)
+        return box
+
+    def showAdditionalMenu(self):
+        if self.additionalLayout.count() == 0:
+            label = QLabel('Test label')
+            setSettingsDefaultFont(label)
+            self.additionalLayout.addRow(label)
+
+    def hideAdditionalMenu(self):
+        if self.additionalLayout.count() != 0:
+            for i in reversed(range(self.additionalLayout.count())):
+                self.additionalLayout.itemAt(i).widget().setParent(None)
 
     def createDefaultOneLineLabel(self, content):
         label = QLabel(content)
