@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSignal, Qt
 from PyQt5.QtWidgets import QVBoxLayout, QLabel, QFormLayout, QHBoxLayout, QLineEdit, QTextEdit, QDateEdit, QComboBox, \
     QPushButton, QKeySequenceEdit, QSpacerItem
 from ..Fonts import *
@@ -19,13 +19,9 @@ class SettingsView(QVBoxLayout):
 
     def createMainLayout(self):
         mainLayout = QFormLayout()
-        self.shortcutField = self.createShortcutField()
-        self.senderEnableButton = self.createEnableButton()
-        self.senderDisableButton = self.createDisableButton()
-        mainLayout.addRow(self.createShortcutLabel(), self.shortcutField)
+        mainLayout.addRow(self.createShortcutLabel(), self.createShortcutField())
         mainLayout.addItem(QSpacerItem(0, 20))
-        mainLayout.addRow(self.createSenderToggleLabel())
-        mainLayout.addRow(self.senderEnableButton, self.senderDisableButton)
+        mainLayout.addRow(self.createSenderToggleLabel(), self.createSenderToggle())
         return mainLayout
 
     def createShortcutLabel(self):
@@ -36,32 +32,34 @@ class SettingsView(QVBoxLayout):
         setSettingsDefaultFont(label)
         return label
 
-    def createSenderToggleLabel(self):
-        labelText = 'Enable email sender feature? \n(you need to have a Gmail Account)'
-        label = self.createDefaultMultiLineLabel(labelText)
-        label.setMaximumHeight(120)
-        label.setMaximumWidth(700)
-        setSettingsDefaultFont(label)
-        return label
-
     def createShortcutField(self):
         field = QKeySequenceEdit()
-        field.setMaximumHeight(70)
-        field.setMaximumWidth(300)
+        self.setMaxSizeForWidget(field, 70, 300)
         setSettingsDefaultFont(field)
         return field
 
+    def createSenderToggleLabel(self):
+        labelText = 'Enable email sender feature? \n(you need to have a Gmail Account)'
+        label = self.createDefaultMultiLineLabel(labelText)
+        self.setMaxSizeForWidget(label, 120, 700)
+        setSettingsDefaultFont(label)
+        return label
+
+    def createSenderToggle(self):
+        layout = QHBoxLayout()
+        layout.addWidget(self.createEnableButton())
+        layout.addWidget(self.createDisableButton())
+        return layout
+
     def createEnableButton(self):
         button = QPushButton('Yes')
-        button.setMaximumHeight(30)
-        button.setMaximumWidth(60)
+        self.setMaxSizeForWidget(button, 30, 60)
         setSettingsDefaultFont(button)
         return button
 
     def createDisableButton(self):
         button = QPushButton('No')
-        button.setMaximumHeight(30)
-        button.setMaximumWidth(60)
+        self.setMaxSizeForWidget(button, 30, 60)
         setSettingsDefaultFont(button)
         return button
 
