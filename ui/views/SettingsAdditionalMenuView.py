@@ -1,39 +1,47 @@
-from PyQt5.QtCore import QObject, pyqtSignal, Qt
-from PyQt5.QtWidgets import QVBoxLayout, QLabel, QFormLayout, QHBoxLayout, QLineEdit, QTextEdit, QDateEdit, QComboBox, \
-    QPushButton, QKeySequenceEdit, QSpacerItem, QTimeEdit
-from ..Fonts import *
+from PyQt5.QtWidgets import QFormLayout, QLineEdit, QTimeEdit
 from ..Defaults import *
+
 
 class SettingsAdditionalMenuView(QFormLayout):
     def __init__(self):
         super().__init__()
-        self.addRow(self.createEmailAddressLabel(), self.createEmailAddressField())
+        self.addRow(self.createEmailAddressLabel(), self.createEmailAddressInput())
         self.addRow(self.createAppPasswordLabel(), self.createAppPasswordInput())
         self.addRow(self.createTimeSetterLabel(), self.createTimeSetterInput())
 
     def createEmailAddressLabel(self):
         label = createDefaultOneLineLabel('Your email address: ')
+        setDefaultFontForSettings(label)
+        setMaxSizeForWidget(label, 100, 320)
         return label
 
     def createEmailAddressInput(self):
         email = QLineEdit()
-        setMaxSizeForWidget(email, 50, 150)
+        setDefaultFontForSettings(email)
+        setMaxSizeForWidget(email, 100, 320)
         return email
 
     def createAppPasswordLabel(self):
         label = createDefaultOneLineLabel('Your app password: ')
+        setDefaultFontForSettings(label)
+        setMaxSizeForWidget(label, 100, 320)
         return label
 
     def createAppPasswordInput(self):
         password = QLineEdit()
-        setMaxSizeForWidget(password, 50, 150)
+        setDefaultFontForSettings(password)
+        setMaxSizeForWidget(password, 100, 320)
         return password
 
     def createTimeSetterLabel(self):
         labelText = 'At what time do you want to get your\'s to-do list?'
         label = createDefaultOneLineLabel(labelText)
+        setDefaultFontForSettings(label)
+        setMaxSizeForWidget(label, 100, 320)
         return label
 
     def createTimeSetterInput(self):
         timeSetter = QTimeEdit()
+        setDefaultFontForSettings(timeSetter)
+        setMaxSizeForWidget(timeSetter, 50, 100)
         return timeSetter

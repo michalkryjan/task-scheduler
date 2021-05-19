@@ -1,8 +1,7 @@
-from PyQt5.QtCore import QObject, pyqtSignal, Qt
-from PyQt5.QtWidgets import QVBoxLayout, QLabel, QFormLayout, QHBoxLayout, QLineEdit, QTextEdit, QDateEdit, QComboBox, \
-    QPushButton, QKeySequenceEdit, QSpacerItem
-from ..Fonts import *
+from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtWidgets import QVBoxLayout, QFormLayout, QHBoxLayout, QPushButton, QKeySequenceEdit, QSpacerItem
 from ..Defaults import *
+from .SettingsAdditionalMenuView import SettingsAdditionalMenuView
 
 
 class SettingsSignals(QObject):
@@ -14,7 +13,8 @@ class SettingsMainView(QVBoxLayout):
     def __init__(self):
         super().__init__()
         self.signals = SettingsSignals()
-        self.additionalLayout = QFormLayout()
+        self.additionalMenu = QFormLayout()
+        self.additionalLayout = QVBoxLayout()
         self.addLayout(self.createMainLayout())
         self.addLayout(self.additionalLayout)
         self.addLayout(self.createSaveButton())
@@ -87,13 +87,13 @@ class SettingsMainView(QVBoxLayout):
         self.enableButton.setStyleSheet("background-color: #7bed9f;")
         self.disableButton.setStyleSheet("background-color: #dfe4ea;")
         if self.additionalLayout.count() == 0:
-            label = QLabel('Test label')
-            setDefaultFontForSettings(label)
-            self.additionalLayout.addRow(label)
+            self.additionalMenu = SettingsAdditionalMenuView()
+            self.additionalLayout.addLayout(self.additionalMenu)
 
     def hideAdditionalMenu(self):
         self.enableButton.setStyleSheet("background-color: #dfe4ea;")
         self.disableButton.setStyleSheet("background-color: #7bed9f;")
-        if self.additionalLayout.count() != 0:
-            for i in reversed(range(self.additionalLayout.count())):
-                self.additionalLayout.itemAt(i).widget().setParent(None)
+        if self.additionalMenu.count() > 0:
+            for i in reversed(range(self.additionalMenu.count())):
+                self.additionalMenu.itemAt(i).widget().setParent(None)
+            self.additionalLayout.itemAt(0).layout().setParent(None)
