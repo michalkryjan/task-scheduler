@@ -2,6 +2,7 @@ from PyQt5.QtCore import QObject, pyqtSignal, Qt
 from PyQt5.QtWidgets import QVBoxLayout, QLabel, QFormLayout, QHBoxLayout, QLineEdit, QTextEdit, QDateEdit, QComboBox, \
     QPushButton, QKeySequenceEdit, QSpacerItem
 from ..Fonts import *
+from ..Defaults import *
 
 
 class SettingsSignals(QObject):
@@ -9,7 +10,7 @@ class SettingsSignals(QObject):
     hideMenu = pyqtSignal()
 
 
-class SettingsView(QVBoxLayout):
+class SettingsMainView(QVBoxLayout):
     def __init__(self):
         super().__init__()
         self.signals = SettingsSignals()
@@ -29,24 +30,24 @@ class SettingsView(QVBoxLayout):
 
     def createShortcutLabel(self):
         labelText = 'Set shortcut keys for opening the app with the view of adding a new task at any moment:'
-        label = self.createDefaultMultiLineLabel(labelText)
+        label = createDefaultMultiLineLabel(labelText)
         label.setMaximumHeight(120)
         label.setMaximumWidth(700)
-        setSettingsDefaultFont(label)
+        setDefaultFontForSettings(label)
         return label
 
     def createShortcutField(self):
         field = QKeySequenceEdit()
         field.setContentsMargins(10, 5, 0, 0)
-        self.setMaxSizeForWidget(field, 70, 400)
-        setSettingsDefaultFont(field)
+        setMaxSizeForWidget(field, 70, 400)
+        setDefaultFontForSettings(field)
         return field
 
     def createSenderToggleLabel(self):
         labelText = 'Enable email sender feature? \n(you need to have a Gmail Account)'
-        label = self.createDefaultMultiLineLabel(labelText)
-        self.setMaxSizeForWidget(label, 120, 700)
-        setSettingsDefaultFont(label)
+        label = createDefaultMultiLineLabel(labelText)
+        setMaxSizeForWidget(label, 120, 700)
+        setDefaultFontForSettings(label)
         return label
 
     def createSenderToggle(self):
@@ -62,22 +63,22 @@ class SettingsView(QVBoxLayout):
         button = QPushButton('Yes')
         button.clicked.connect(self.signals.showMenu.emit)
         button.setStyleSheet("background-color: #dfe4ea;")
-        self.setMaxSizeForWidget(button, 30, 60)
-        setSettingsDefaultFont(button)
+        setMaxSizeForWidget(button, 30, 60)
+        setDefaultFontForSettings(button)
         return button
 
     def createDisableButton(self):
         button = QPushButton('No')
         button.clicked.connect(self.signals.hideMenu.emit)
         button.setStyleSheet("background-color: #7bed9f;")
-        self.setMaxSizeForWidget(button, 30, 60)
-        setSettingsDefaultFont(button)
+        setMaxSizeForWidget(button, 30, 60)
+        setDefaultFontForSettings(button)
         return button
 
     def createSaveButton(self):
         box = QHBoxLayout()
         button = QPushButton('Save')
-        self.setMaxSizeForWidget(button, 35, 80)
+        setMaxSizeForWidget(button, 35, 80)
         setDefaultFontForWidget(button)
         box.addWidget(button)
         return box
@@ -87,7 +88,7 @@ class SettingsView(QVBoxLayout):
         self.disableButton.setStyleSheet("background-color: #dfe4ea;")
         if self.additionalLayout.count() == 0:
             label = QLabel('Test label')
-            setSettingsDefaultFont(label)
+            setDefaultFontForSettings(label)
             self.additionalLayout.addRow(label)
 
     def hideAdditionalMenu(self):
@@ -96,22 +97,3 @@ class SettingsView(QVBoxLayout):
         if self.additionalLayout.count() != 0:
             for i in reversed(range(self.additionalLayout.count())):
                 self.additionalLayout.itemAt(i).widget().setParent(None)
-
-    def createDefaultOneLineLabel(self, content):
-        label = QLabel(content)
-        setSettingsDefaultFont(label)
-        return label
-
-    def createDefaultMultiLineLabel(self, content):
-        label = QLabel(content)
-        setSettingsDefaultFont(label)
-        label.setWordWrap(True)
-        return label
-
-    def setMaxSizeForWidget(self, widget, height, width):
-        widget.setMaximumHeight(height)
-        widget.setMaximumWidth(width)
-
-    def setMinSizeForWidget(self, widget, height, width):
-        widget.setMinimumHeight(height)
-        widget.setMinimumWidth(width)
