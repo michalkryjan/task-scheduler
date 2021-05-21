@@ -14,7 +14,7 @@ class RequirementsDialog(QDialog):
         self.setLayout(mainLayout)
 
     def setupWindow(self):
-        pass
+        self.setWindowTitle('More data required')
 
     def createEmailRequirement(self):
         text = 'You need to pass your email address! (for Gmail account which has enabled option "less secure apps")'

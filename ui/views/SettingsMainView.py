@@ -22,7 +22,7 @@ class SettingsMainView(QVBoxLayout):
         self.addLayout(self.createSaveButton())
         self.signals.showMenu.connect(self.showAdditionalMenu)
         self.signals.hideMenu.connect(self.hideAdditionalMenu)
-        self.signals.saveSettings.connect(self.checkRequiredFields)
+        self.signals.saveSettings.connect(self.saveAllSettings)
 
     def createMainLayout(self):
         mainLayout = QFormLayout()
@@ -109,18 +109,22 @@ class SettingsMainView(QVBoxLayout):
                 self.additionalMenu.itemAt(i).widget().setParent(None)
             self.additionalLayout.itemAt(0).layout().setParent(None)
 
-    def checkRequiredFields(self):
-        # if key shortcut is set, add shortcut for opening the app
-        if self.additionalMenu.count() > 0:
-            email = self.additionalMenu.emailAddressInput.text()
-            password = self.additionalMenu.appPasswordInput.text()
-            time = self.additionalMenu.timeSetterInput.text()
-            print(email, password, time)
-
-
     def saveAllSettings(self):
-        dialog = QDialog()
-        layout = QVBoxLayout()
-        layout.addWidget(QLabel('add app password'))
-        dialog.setLayout(layout)
-        dialog.exec()
+        # if a key shortcut is set, add shortcut for opening the app
+        # save sender settings:
+        if self.additionalMenu.count() > 0:
+            if self.checkRequiredFields() is True:
+                email = self.additionalMenu.emailAddressInput.text()
+                password = self.additionalMenu.appPasswordInput.text()
+                time = self.additionalMenu.timeSetterInput.text()
+
+
+    def checkRequiredFields(self):
+        email = self.additionalMenu.emailAddressInput.text()
+        password = self.additionalMenu.appPasswordInput.text()
+        if email == '' or password == '':
+            requirementsDialog = RequirementsDialog(email, password)
+            requirementsDialog.exec()
+            return False
+        else:
+            return True
