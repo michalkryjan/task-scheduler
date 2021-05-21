@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QObject, pyqtSignal, Qt
-from PyQt5.QtWidgets import QVBoxLayout, QFormLayout, QHBoxLayout, QPushButton, QKeySequenceEdit, QSpacerItem
+from PyQt5.QtWidgets import QVBoxLayout, QFormLayout, QHBoxLayout, QPushButton, QKeySequenceEdit, QSpacerItem, QDialog
 from ..Defaults import *
 from .SettingsAdditionalMenuView import SettingsAdditionalMenuView
 
@@ -7,6 +7,7 @@ from .SettingsAdditionalMenuView import SettingsAdditionalMenuView
 class SettingsSignals(QObject):
     showMenu = pyqtSignal()
     hideMenu = pyqtSignal()
+    saveSettings = pyqtSignal()
 
 
 class SettingsMainView(QVBoxLayout):
@@ -20,6 +21,7 @@ class SettingsMainView(QVBoxLayout):
         self.addLayout(self.createSaveButton())
         self.signals.showMenu.connect(self.showAdditionalMenu)
         self.signals.hideMenu.connect(self.hideAdditionalMenu)
+        self.signals.saveSettings.connect(self.checkRequiredFields)
 
     def createMainLayout(self):
         mainLayout = QFormLayout()
@@ -69,6 +71,7 @@ class SettingsMainView(QVBoxLayout):
 
     def createDisableButton(self):
         button = QPushButton('No')
+        button.setObjectName('on')
         button.clicked.connect(self.signals.hideMenu.emit)
         button.setStyleSheet("background-color: #7bed9f;")
         setMaxSizeForWidget(button, 30, 60)
@@ -78,12 +81,15 @@ class SettingsMainView(QVBoxLayout):
     def createSaveButton(self):
         box = QHBoxLayout()
         button = QPushButton('Save')
+        button.clicked.connect(self.signals.saveSettings.emit)
         setMaxSizeForWidget(button, 35, 80)
         setDefaultFontForWidget(button)
         box.addWidget(button)
         return box
 
     def showAdditionalMenu(self):
+        self.enableButton.setObjectName('on')
+        self.disableButton.setObjectName('off')
         self.enableButton.setStyleSheet("background-color: #7bed9f;")
         self.disableButton.setStyleSheet("background-color: #dfe4ea;")
         self.additionalLayout.setSpacing(30)
@@ -93,9 +99,23 @@ class SettingsMainView(QVBoxLayout):
             self.additionalLayout.addLayout(self.additionalMenu)
 
     def hideAdditionalMenu(self):
+        self.enableButton.setObjectName('off')
+        self.disableButton.setObjectName('on')
         self.enableButton.setStyleSheet("background-color: #dfe4ea;")
         self.disableButton.setStyleSheet("background-color: #7bed9f;")
         if self.additionalMenu.count() > 0:
             for i in reversed(range(self.additionalMenu.count())):
                 self.additionalMenu.itemAt(i).widget().setParent(None)
             self.additionalLayout.itemAt(0).layout().setParent(None)
+
+    def checkRequiredFields(self):
+        # if key shortcut is set, add shortcut for opening the app
+        if self.enableButton.objectName() == 'on':
+            self.saveAllSettings()
+
+    def saveAllSettings(self):
+        dialog = QDialog()
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel('add app password'))
+        dialog.setLayout(layout)
+        dialog.exec()

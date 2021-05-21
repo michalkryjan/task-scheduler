@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTime
 from PyQt5.QtWidgets import QFormLayout, QLineEdit, QTimeEdit
 from ..Defaults import *
 
@@ -6,9 +6,12 @@ from ..Defaults import *
 class SettingsAdditionalMenuView(QFormLayout):
     def __init__(self):
         super().__init__()
-        self.addRow(self.createEmailAddressLabel(), self.createEmailAddressInput())
-        self.addRow(self.createAppPasswordLabel(), self.createAppPasswordInput())
-        self.addRow(self.createTimeSetterLabel(), self.createTimeSetterInput())
+        self.emailAddressInput = self.createEmailAddressInput()
+        self.appPasswordInput = self.createAppPasswordInput()
+        self.timeSetterInput = self.createTimeSetterInput()
+        self.addRow(self.createEmailAddressLabel(), self.emailAddressInput)
+        self.addRow(self.createAppPasswordLabel(), self.appPasswordInput)
+        self.addRow(self.createTimeSetterLabel(), self.timeSetterInput)
 
     def createEmailAddressLabel(self):
         label = createDefaultOneLineLabel('Your email address: ')
@@ -42,7 +45,8 @@ class SettingsAdditionalMenuView(QFormLayout):
         return label
 
     def createTimeSetterInput(self):
-        timeSetter = QTimeEdit()
+        defaultTime = QTime(7, 0)
+        timeSetter = QTimeEdit(defaultTime)
         setDefaultFontForSettings(timeSetter)
         setMaxSizeForWidget(timeSetter, 50, 100)
         return timeSetter

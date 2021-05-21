@@ -10,7 +10,7 @@ def sendEmail(email):
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls(context=context)
-        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        server.login(EMAIL_ADDRESS, APP_PASSWORD)
         server.sendmail(EMAIL_ADDRESS, EMAIL_ADDRESS, email.as_string())
     except Exception as e:
         print(e)
@@ -20,7 +20,7 @@ def sendEmail(email):
 
 load_dotenv()
 EMAIL_ADDRESS = os.environ['EMAIL_ADDRESS']
-EMAIL_PASSWORD = os.environ['EMAIL_PASSWORD']
+APP_PASSWORD = os.environ['APP_PASSWORD']
 
 email = createFullEmail(EMAIL_ADDRESS, EMAIL_ADDRESS)
 sendEmail(email)

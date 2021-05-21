@@ -1,6 +1,5 @@
 import sqlite3
 import os.path
-from datetime import datetime
 
 
 def createConnection():
