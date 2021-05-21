@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFormLayout, QLineEdit, QTimeEdit
 from ..Defaults import *
 
@@ -12,32 +13,32 @@ class SettingsAdditionalMenuView(QFormLayout):
     def createEmailAddressLabel(self):
         label = createDefaultOneLineLabel('Your email address: ')
         setDefaultFontForSettings(label)
-        setMaxSizeForWidget(label, 100, 320)
+        setMaxSizeForWidget(label, 150, 320)
         return label
 
     def createEmailAddressInput(self):
         email = QLineEdit()
         setDefaultFontForSettings(email)
-        setMaxSizeForWidget(email, 100, 320)
+        setMaxSizeForWidget(email, 150, 320)
         return email
 
     def createAppPasswordLabel(self):
         label = createDefaultOneLineLabel('Your app password: ')
         setDefaultFontForSettings(label)
-        setMaxSizeForWidget(label, 100, 320)
+        setMaxSizeForWidget(label, 150, 320)
         return label
 
     def createAppPasswordInput(self):
         password = QLineEdit()
         setDefaultFontForSettings(password)
-        setMaxSizeForWidget(password, 100, 320)
+        setMaxSizeForWidget(password, 150, 320)
         return password
 
     def createTimeSetterLabel(self):
         labelText = 'At what time do you want to get your\'s to-do list?'
         label = createDefaultOneLineLabel(labelText)
         setDefaultFontForSettings(label)
-        setMaxSizeForWidget(label, 100, 320)
+        setMaxSizeForWidget(label, 150, 320)
         return label
 
     def createTimeSetterInput(self):

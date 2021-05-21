@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSignal, Qt
 from PyQt5.QtWidgets import QVBoxLayout, QFormLayout, QHBoxLayout, QPushButton, QKeySequenceEdit, QSpacerItem
 from ..Defaults import *
 from .SettingsAdditionalMenuView import SettingsAdditionalMenuView
@@ -86,6 +86,8 @@ class SettingsMainView(QVBoxLayout):
     def showAdditionalMenu(self):
         self.enableButton.setStyleSheet("background-color: #7bed9f;")
         self.disableButton.setStyleSheet("background-color: #dfe4ea;")
+        self.additionalLayout.setSpacing(30)
+        self.additionalLayout.setContentsMargins(0, 0, 0, 230)
         if self.additionalLayout.count() == 0:
             self.additionalMenu = SettingsAdditionalMenuView()
             self.additionalLayout.addLayout(self.additionalMenu)
