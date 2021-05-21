@@ -1,7 +1,8 @@
 from PyQt5.QtCore import QObject, pyqtSignal, Qt
-from PyQt5.QtWidgets import QVBoxLayout, QFormLayout, QHBoxLayout, QPushButton, QKeySequenceEdit, QSpacerItem, QDialog
+from PyQt5.QtWidgets import QVBoxLayout, QFormLayout, QHBoxLayout, QPushButton, QKeySequenceEdit, QSpacerItem, QDialog, QLineEdit
 from ..Defaults import *
 from .SettingsAdditionalMenuView import SettingsAdditionalMenuView
+from .SettingsRequirementsDialog import RequirementsDialog
 
 
 class SettingsSignals(QObject):
@@ -110,8 +111,12 @@ class SettingsMainView(QVBoxLayout):
 
     def checkRequiredFields(self):
         # if key shortcut is set, add shortcut for opening the app
-        if self.enableButton.objectName() == 'on':
-            self.saveAllSettings()
+        if self.additionalMenu.count() > 0:
+            email = self.additionalMenu.emailAddressInput.text()
+            password = self.additionalMenu.appPasswordInput.text()
+            time = self.additionalMenu.timeSetterInput.text()
+            print(email, password, time)
+
 
     def saveAllSettings(self):
         dialog = QDialog()
