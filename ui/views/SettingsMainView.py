@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QVBoxLayout, QFormLayout, QHBoxLayout, QPushButton, 
 from ..Defaults import *
 from .SettingsAdditionalMenuView import SettingsAdditionalMenuView
 from .SettingsRequirementsDialog import RequirementsDialog
+from ..saveSettings import Config
 
 
 class SettingsSignals(QObject):
@@ -111,9 +112,13 @@ class SettingsMainView(QVBoxLayout):
             self.additionalLayout.itemAt(0).layout().setParent(None)
 
     def saveAllSettings(self):
-        shortcutsList = self.getShortcutSettings()
-        senderSettingsDict = self.getSenderSettings()
-        # save shortcuts and sender settings to config.ini
+        shortcutSettings = self.getShortcutSettings()
+        senderSettings = None
+        if self.enableButton.objectName() == 'active':
+            if self.checkRequiredFields() is True:
+                senderSettings = self.getSenderSettings()
+        config = Config(shortcutSettings, senderSettings)
+        config.saveToIniFile()
         # -> createKeyShortcuts in Windows
         # -> add scheduled task to Windows
 
@@ -126,26 +131,26 @@ class SettingsMainView(QVBoxLayout):
                 if shortcut not in shortcutsList:
                     shortcutsList.append(shortcut)
             return shortcutsList
-
-    def getSenderSettings(self):
-        if self.enableButton.objectName() == 'active':
-            if self.checkRequiredFields() is True:
-                email = self.additionalMenu.emailAddressInput.text()
-                password = self.additionalMenu.appPasswordInput.text()
-                time = self.additionalMenu.timeSetterInput.text()
-                senderSettings = {
-                    'email': email,
-                    'password': password,
-                    'time': time,
-                }
-                return senderSettings
+        else:
+            return None
 
     def checkRequiredFields(self):
         email = self.additionalMenu.emailAddressInput.text()
         password = self.additionalMenu.appPasswordInput.text()
-        if email == '' or password == '':
+        if len(email) > 0 and len(password) > 0:
+            return True
+        else:
             requirementsDialog = RequirementsDialog(email, password)
             requirementsDialog.exec()
             return False
-        else:
-            return True
+
+    def getSenderSettings(self):
+        email = self.additionalMenu.emailAddressInput.text()
+        password = self.additionalMenu.appPasswordInput.text()
+        time = self.additionalMenu.timeSetterInput.text()
+        senderSettings = {
+            'email': email,
+            'password': password,
+            'time': time,
+        }
+        return senderSettings
