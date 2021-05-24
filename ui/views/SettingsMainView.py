@@ -25,8 +25,9 @@ class SettingsMainView(QVBoxLayout):
         self.signals.saveSettings.connect(self.saveAllSettings)
 
     def createMainLayout(self):
+        self.shortcutInput = self.createShortcutField()
         mainLayout = QFormLayout()
-        mainLayout.addRow(self.createShortcutLabel(), self.createShortcutField())
+        mainLayout.addRow(self.createShortcutLabel(), self.shortcutInput)
         mainLayout.addItem(QSpacerItem(0, 20))
         mainLayout.addRow(self.createSenderToggleLabel(), self.createSenderToggle())
         return mainLayout
@@ -72,7 +73,7 @@ class SettingsMainView(QVBoxLayout):
 
     def createDisableButton(self):
         button = QPushButton('No')
-        button.setObjectName('on')
+        button.setObjectName('active')
         button.clicked.connect(self.signals.hideMenu.emit)
         button.setStyleSheet("background-color: #7bed9f;")
         setMaxSizeForWidget(button, 30, 60)
@@ -89,8 +90,8 @@ class SettingsMainView(QVBoxLayout):
         return box
 
     def showAdditionalMenu(self):
-        self.enableButton.setObjectName('on')
-        self.disableButton.setObjectName('off')
+        self.enableButton.setObjectName('active')
+        self.disableButton.setObjectName('')
         self.enableButton.setStyleSheet("background-color: #7bed9f;")
         self.disableButton.setStyleSheet("background-color: #dfe4ea;")
         self.additionalLayout.setSpacing(30)
@@ -100,8 +101,8 @@ class SettingsMainView(QVBoxLayout):
             self.additionalLayout.addLayout(self.additionalMenu)
 
     def hideAdditionalMenu(self):
-        self.enableButton.setObjectName('off')
-        self.disableButton.setObjectName('on')
+        self.enableButton.setObjectName('')
+        self.disableButton.setObjectName('active')
         self.enableButton.setStyleSheet("background-color: #dfe4ea;")
         self.disableButton.setStyleSheet("background-color: #7bed9f;")
         if self.additionalMenu.count() > 0:
@@ -110,14 +111,34 @@ class SettingsMainView(QVBoxLayout):
             self.additionalLayout.itemAt(0).layout().setParent(None)
 
     def saveAllSettings(self):
-        # if a key shortcut is set, add shortcut for opening the app
-        # save sender settings:
-        if self.additionalMenu.count() > 0:
+        shortcutsList = self.getShortcutSettings()
+        senderSettingsDict = self.getSenderSettings()
+        # save shortcuts and sender settings to config.ini
+        # -> createKeyShortcuts in Windows
+        # -> add scheduled task to Windows
+
+    def getShortcutSettings(self):
+        shortcuts = self.shortcutInput.keySequence()
+        if shortcuts.count() > 0:
+            tempList = shortcuts.toString().split(', ')
+            shortcutsList = []
+            for shortcut in tempList:
+                if shortcut not in shortcutsList:
+                    shortcutsList.append(shortcut)
+            return shortcutsList
+
+    def getSenderSettings(self):
+        if self.enableButton.objectName() == 'active':
             if self.checkRequiredFields() is True:
                 email = self.additionalMenu.emailAddressInput.text()
                 password = self.additionalMenu.appPasswordInput.text()
                 time = self.additionalMenu.timeSetterInput.text()
-
+                senderSettings = {
+                    'email': email,
+                    'password': password,
+                    'time': time,
+                }
+                return senderSettings
 
     def checkRequiredFields(self):
         email = self.additionalMenu.emailAddressInput.text()
