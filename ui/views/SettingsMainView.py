@@ -1,9 +1,9 @@
-from PyQt5.QtCore import QObject, pyqtSignal, Qt
-from PyQt5.QtWidgets import QVBoxLayout, QFormLayout, QHBoxLayout, QPushButton, QKeySequenceEdit, QSpacerItem, QDialog, QLineEdit
+from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtWidgets import QVBoxLayout, QFormLayout, QHBoxLayout, QPushButton, QKeySequenceEdit, QSpacerItem
 from ..Defaults import *
 from .SettingsAdditionalMenuView import SettingsAdditionalMenuView
 from .SettingsRequirementsDialog import RequirementsDialog
-from ..saveSettings import Config
+from settings.Config import Config
 
 
 class SettingsSignals(QObject):

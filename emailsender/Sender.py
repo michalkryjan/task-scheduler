@@ -1,8 +1,9 @@
 from emailsender.createEmail import createFullEmail
-from dotenv import load_dotenv
 import smtplib
 import ssl
 import os
+import pathlib
+from configparser import ConfigParser
 
 
 def sendEmail(email):
@@ -18,9 +19,14 @@ def sendEmail(email):
         server.quit()
 
 
-load_dotenv()
-EMAIL_ADDRESS = os.environ['EMAIL_ADDRESS']
-APP_PASSWORD = os.environ['APP_PASSWORD']
+rootFolder = pathlib.PureWindowsPath(os.path.abspath(__file__)).parents[1]
+configFilePath = os.path.join(rootFolder, 'config.ini')
+config = ConfigParser()
 
-email = createFullEmail(EMAIL_ADDRESS, EMAIL_ADDRESS)
-sendEmail(email)
+config.read(configFilePath)
+is_active = config.get('sender', 'is_active')
+if is_active == 'yes':
+    EMAIL_ADDRESS = config.get('sender', 'email')
+    APP_PASSWORD = config.get('sender', 'password')
+    email = createFullEmail(EMAIL_ADDRESS, EMAIL_ADDRESS)
+    sendEmail(email)

@@ -132,3 +132,4 @@ dmypy.json
 Tasks.db
 database/Tasks.db
 .pylintrc
+config.ini
