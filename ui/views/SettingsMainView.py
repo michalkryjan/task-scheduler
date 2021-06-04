@@ -4,7 +4,10 @@ from ..Defaults import *
 from .SettingsAdditionalMenuView import SettingsAdditionalMenuView
 from .SettingsRequirementsDialog import RequirementsDialog
 from settings.Config import Config
-
+from configparser import ConfigParser
+import pathlib
+import os
+rootPath = pathlib.PureWindowsPath(os.path.abspath(__file__)).parents[2]
 
 class SettingsSignals(QObject):
     showMenu = pyqtSignal()
@@ -25,6 +28,12 @@ class SettingsMainView(QVBoxLayout):
         self.signals.hideMenu.connect(self.hideAdditionalMenu)
         self.signals.saveSettings.connect(self.saveAllSettings)
 
+    def getCurrentConfig(self):
+        rootPath = pathlib.PureWindowsPath(os.path.abspath(__file__)).parents[2]
+        config = ConfigParser()
+        config.read(os.path.join(rootPath, 'config.ini'))
+        return config
+
     def createMainLayout(self):
         self.shortcutInput = self.createShortcutField()
         mainLayout = QFormLayout()
@@ -42,11 +51,24 @@ class SettingsMainView(QVBoxLayout):
         return label
 
     def createShortcutField(self):
-        field = QKeySequenceEdit()
+        currentConfig = self.getCurrentConfig()
+        if currentConfig.get('shortcut_keys', 'is_active') == 'yes':
+            currentShortcuts = self.convertShortcutsToString(currentConfig)
+            field = QKeySequenceEdit(currentShortcuts)
+        else:
+            field = QKeySequenceEdit()
         field.setContentsMargins(10, 5, 0, 0)
         setMaxSizeForWidget(field, 70, 400)
         setDefaultFontForSettings(field)
         return field
+
+    def convertShortcutsToString(self, currentConfig):
+        shortcutsString = ''
+        i = 1
+        while currentConfig.has_option('shortcut_keys', f'shortcut_key_{i}'):
+            shortcutsString += currentConfig.get('shortcut_keys', f'shortcut_key_{i}') + ','
+            i += 1
+        return shortcutsString[:-1]
 
     def createSenderToggleLabel(self):
         labelText = 'Enable email sender feature? \n(you need to have a Gmail Account)'
