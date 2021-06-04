@@ -4,11 +4,11 @@ from ..Defaults import *
 
 
 class SettingsAdditionalMenuView(QFormLayout):
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__()
-        self.emailAddressInput = self.createEmailAddressInput()
-        self.appPasswordInput = self.createAppPasswordInput()
-        self.timeSetterInput = self.createTimeSetterInput()
+        self.emailAddressInput = self.createEmailAddressInput(kwargs.get('email', None))
+        self.appPasswordInput = self.createAppPasswordInput(kwargs.get('password', None))
+        self.timeSetterInput = self.createTimeSetterInput(kwargs.get('time', None))
         self.addRow(self.createEmailAddressLabel(), self.emailAddressInput)
         self.addRow(self.createAppPasswordLabel(), self.appPasswordInput)
         self.addRow(self.createTimeSetterLabel(), self.timeSetterInput)
@@ -19,11 +19,14 @@ class SettingsAdditionalMenuView(QFormLayout):
         setMaxSizeForWidget(label, 150, 320)
         return label
 
-    def createEmailAddressInput(self):
-        email = QLineEdit()
-        setDefaultFontForSettings(email)
-        setMaxSizeForWidget(email, 150, 320)
-        return email
+    def createEmailAddressInput(self, email):
+        if email is not None:
+            input = QLineEdit(email)
+        else:
+            input = QLineEdit()
+        setDefaultFontForSettings(input)
+        setMaxSizeForWidget(input, 150, 320)
+        return input
 
     def createAppPasswordLabel(self):
         label = createDefaultOneLineLabel('Your app password: ')
@@ -31,11 +34,14 @@ class SettingsAdditionalMenuView(QFormLayout):
         setMaxSizeForWidget(label, 150, 320)
         return label
 
-    def createAppPasswordInput(self):
-        password = QLineEdit()
-        setDefaultFontForSettings(password)
-        setMaxSizeForWidget(password, 150, 320)
-        return password
+    def createAppPasswordInput(self, password):
+        if password is not None:
+            input = QLineEdit(password)
+        else:
+            input = QLineEdit()
+        setDefaultFontForSettings(input)
+        setMaxSizeForWidget(input, 150, 320)
+        return input
 
     def createTimeSetterLabel(self):
         labelText = 'At what time do you want to get your\'s to-do list?'
@@ -44,9 +50,13 @@ class SettingsAdditionalMenuView(QFormLayout):
         setMaxSizeForWidget(label, 150, 320)
         return label
 
-    def createTimeSetterInput(self):
-        defaultTime = QTime(7, 0)
-        timeSetter = QTimeEdit(defaultTime)
+    def createTimeSetterInput(self, currentTime):
+        if currentTime is not None:
+            currentTime = currentTime.split(':')
+            time = QTime(int(currentTime[0]), int(currentTime[1]))
+        else:
+            time = QTime(7, 0)
+        timeSetter = QTimeEdit(time)
         setDefaultFontForSettings(timeSetter)
         setMaxSizeForWidget(timeSetter, 50, 100)
         return timeSetter

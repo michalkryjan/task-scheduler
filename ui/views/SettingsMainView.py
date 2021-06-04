@@ -113,25 +113,38 @@ class SettingsMainView(QVBoxLayout):
         return box
 
     def showAdditionalMenu(self):
+        self.setSenderEnableButtonAsActive()
+        self.additionalLayout.setSpacing(30)
+        self.additionalLayout.setContentsMargins(0, 0, 0, 230)
+        currentConfig = self.getCurrentConfig()
+        if currentConfig.get('sender', 'is_active') == 'yes':
+            currEmail = currentConfig.get('sender', 'email')
+            currPassword = currentConfig.get('sender', 'password')
+            currTime = currentConfig.get('sender', 'time')
+            if self.additionalLayout.count() == 0:
+                self.additionalMenu = SettingsAdditionalMenuView(email=currEmail, password=currPassword, time=currTime)
+        elif self.additionalLayout.count() == 0:
+            self.additionalMenu = SettingsAdditionalMenuView()
+        self.additionalLayout.addLayout(self.additionalMenu)
+
+    def setSenderEnableButtonAsActive(self):
         self.enableButton.setObjectName('active')
         self.disableButton.setObjectName('')
         self.enableButton.setStyleSheet("background-color: #7bed9f;")
         self.disableButton.setStyleSheet("background-color: #dfe4ea;")
-        self.additionalLayout.setSpacing(30)
-        self.additionalLayout.setContentsMargins(0, 0, 0, 230)
-        if self.additionalLayout.count() == 0:
-            self.additionalMenu = SettingsAdditionalMenuView()
-            self.additionalLayout.addLayout(self.additionalMenu)
 
     def hideAdditionalMenu(self):
-        self.enableButton.setObjectName('')
-        self.disableButton.setObjectName('active')
-        self.enableButton.setStyleSheet("background-color: #dfe4ea;")
-        self.disableButton.setStyleSheet("background-color: #7bed9f;")
+        self.setSenderDisableButtonAsActive()
         if self.additionalMenu.count() > 0:
             for i in reversed(range(self.additionalMenu.count())):
                 self.additionalMenu.itemAt(i).widget().setParent(None)
             self.additionalLayout.itemAt(0).layout().setParent(None)
+
+    def setSenderDisableButtonAsActive(self):
+        self.enableButton.setObjectName('')
+        self.disableButton.setObjectName('active')
+        self.enableButton.setStyleSheet("background-color: #dfe4ea;")
+        self.disableButton.setStyleSheet("background-color: #7bed9f;")
 
     def saveAllSettings(self):
         shortcutSettings = self.getShortcutSettings()
