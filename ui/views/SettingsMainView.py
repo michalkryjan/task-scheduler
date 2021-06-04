@@ -7,7 +7,7 @@ from settings.Config import Config
 from configparser import ConfigParser
 import pathlib
 import os
-rootPath = pathlib.PureWindowsPath(os.path.abspath(__file__)).parents[2]
+
 
 class SettingsSignals(QObject):
     showMenu = pyqtSignal()
@@ -27,12 +27,7 @@ class SettingsMainView(QVBoxLayout):
         self.signals.showMenu.connect(self.showAdditionalMenu)
         self.signals.hideMenu.connect(self.hideAdditionalMenu)
         self.signals.saveSettings.connect(self.saveAllSettings)
-
-    def getCurrentConfig(self):
-        rootPath = pathlib.PureWindowsPath(os.path.abspath(__file__)).parents[2]
-        config = ConfigParser()
-        config.read(os.path.join(rootPath, 'config.ini'))
-        return config
+        self.checkIfSenderIsActive()
 
     def createMainLayout(self):
         self.shortcutInput = self.createShortcutField()
@@ -61,6 +56,12 @@ class SettingsMainView(QVBoxLayout):
         setMaxSizeForWidget(field, 70, 400)
         setDefaultFontForSettings(field)
         return field
+
+    def getCurrentConfig(self):
+        rootPath = pathlib.PureWindowsPath(os.path.abspath(__file__)).parents[2]
+        config = ConfigParser()
+        config.read(os.path.join(rootPath, 'config.ini'))
+        return config
 
     def convertShortcutsToString(self, currentConfig):
         shortcutsString = ''
@@ -111,6 +112,11 @@ class SettingsMainView(QVBoxLayout):
         setDefaultFontForWidget(button)
         box.addWidget(button)
         return box
+
+    def checkIfSenderIsActive(self):
+        config = self.getCurrentConfig()
+        if config.get('sender', 'is_active') == 'yes':
+            self.signals.showMenu.emit()
 
     def showAdditionalMenu(self):
         self.setSenderEnableButtonAsActive()
