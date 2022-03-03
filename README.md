@@ -1,5 +1,5 @@
 # Task Scheduler
-## I left this project public only to show my progress in programming which I made in 11 months. If you look at my recent projects you'll know what I'm talking about :) This code is not clean and not optimized, I know. But I keep this speed of self-developing, so I can only wonder what will appear on this profile in the next year :D 
+## I left this project public only to show my progress in programming which I made in 11 months. If you look at my recent projects you'll know what I'm talking about :) This code is not clean and not optimized, I know. But I keep this speed of self-developing, so I only wonder what will appear on this profile in the next year :D 
 
 
 
